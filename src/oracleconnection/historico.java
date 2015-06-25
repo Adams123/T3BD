@@ -7,7 +7,7 @@ package oracleconnection;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.ScrollPane;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -15,14 +15,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Random;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -38,6 +44,7 @@ public final class historico extends JFrame{
     JTable tabelaHistorico;
     JScrollPane paneHistorico;
     JTextField jtAreaDeStatus;
+    
     public historico(String host, String user, String pass, Connection con){
         this.host=host;
         this.user=user;
@@ -50,16 +57,17 @@ public final class historico extends JFrame{
     };
     
     public void exibeJanelaHistorico(){
+        //janela principal
         j = new JFrame("ICMC-USP - SCC0240 - Projeto 3");
         j.setSize(700, 500);
         j.setLayout(new BorderLayout());
-        j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        j.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //definindo áreas de botões
         panelBaixo = new JPanel();
         j.add(panelBaixo, BorderLayout.SOUTH);
         panelTopo = new JPanel();
         j.add(panelTopo, BorderLayout.NORTH);
-        
+        //criando os botões
         inserir = new JButton();
         inserir.setText("Inserir");
         remover = new JButton();
@@ -68,6 +76,7 @@ public final class historico extends JFrame{
         alterar.setText("Alterar");
         sair = new JButton();
         sair.setText("Fechar");
+        //área de status
         jtAreaDeStatus = new JTextField();
         
         panelBaixo.add(inserir);
@@ -77,24 +86,32 @@ public final class historico extends JFrame{
         panelBaixo.add(jtAreaDeStatus);
         
         eventosBotoes();
-        paneHistorico = exibeHistorico(tabelaHistorico,con);
+        tabelaHistorico = exibeHistorico(j,con,"HISTORICODEPAGAMENTO");
+        
         j.setVisible(true);
     }
     
     public void eventosBotoes(){
         sair.addActionListener(new ActionListener(){
-
             public void actionPerformed(ActionEvent ae) {
                 j.dispose(); //fecha janela atual
             }
+        });
+        inserir.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent ae) {
+                inserirHistorico hist;
+                hist = new inserirHistorico(con);
+            }
+        
         
         });
     }
     
-    public JScrollPane exibeHistorico(JTable tATable, Connection conexao){
+    public JTable exibeHistorico(JFrame principal, Connection conexao, String tablename){
         String input;
         
-        input = "SELECT * FROM HISTORICODEPAGAMENTO";
+        input = "SELECT * FROM " + tablename;
         
         Vector columnNames = new Vector();
         Vector data = new Vector();
@@ -131,25 +148,17 @@ public final class historico extends JFrame{
         } catch (SQLException e) {
             jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
         }
-        //cria tabela e painel novo para exibir as consultas
-        JTable table = new JTable(data, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(tamx, tamy));
-        JScrollPane scrollPane = new JScrollPane(table);
-        JPanel panel = new JPanel();
-        panel.add(scrollPane);
-        JButton botaoVoltar = new JButton("Voltar");
-        botaoVoltar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        panel.setSize(250, 1024);
-        this.setContentPane(panel);
-        this.pack();
-        this.setVisible(true);
+        //cria tabela e painel novo para exibir as consultas, retornando a mesma
+        DefaultTableModel d = new DefaultTableModel(data, columnNames);
+        JTable tATable = new JTable(d);
+        tATable.setCellSelectionEnabled(true);
+        ListSelectionModel cellSelectionModel = tATable.getSelectionModel();
+        cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(tATable); //cria o painel para colocar a tabela
+        principal.add(scrollPane);
+        jtAreaDeStatus.setText("Tabela " + tablename); //avisa qual tabela está sendo exibida
         
-        return null;
+        return tATable;
+
     }
 }
