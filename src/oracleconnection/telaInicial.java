@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -24,6 +25,8 @@ public class telaInicial extends javax.swing.JFrame {
      */
     String host, user, pass, conexao = null;
     Connection connection;
+    
+    JPanel panelBaixo = new JPanel();
 
     public telaInicial(String host, String user, String pass, String conexao) {
         initComponents();
@@ -31,20 +34,23 @@ public class telaInicial extends javax.swing.JFrame {
         this.user = user;
         this.pass = pass;
         this.conexao = conexao;
-
+        conectar();
+    }
+    
+    public boolean conectar() {
         try {
             Class.forName(conexao);
             connection = DriverManager.getConnection(
                     host,
                     user,
                     pass);
-            connection.close();
+            jtAreaDeStatus.setText("Conectado com sucesso em "+user);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(telaInicial.class.getName()).log(Level.SEVERE, null, ex);
+            jtAreaDeStatus.setText("Problema: verifique o driver do banco de dados");
         } catch (SQLException ex) {
-            Logger.getLogger(telaInicial.class.getName()).log(Level.SEVERE, null, ex);
+            jtAreaDeStatus.setText("Problema: verifique seu usuário e senha");
         }
-
+        return false;
     }
 
     private telaInicial() {}
@@ -61,6 +67,7 @@ public class telaInicial extends javax.swing.JFrame {
         botaoHistorico = new javax.swing.JButton();
         botaoAssinaturas = new javax.swing.JButton();
         botaoRelatorio = new javax.swing.JButton();
+        jtAreaDeStatus = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,6 +92,8 @@ public class telaInicial extends javax.swing.JFrame {
             }
         });
 
+        jtAreaDeStatus.setText("jTextField1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -94,7 +103,8 @@ public class telaInicial extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(botaoRelatorio)
                     .addComponent(botaoAssinaturas)
-                    .addComponent(botaoHistorico, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(botaoHistorico, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtAreaDeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -109,7 +119,9 @@ public class telaInicial extends javax.swing.JFrame {
                 .addComponent(botaoAssinaturas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botaoRelatorio)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtAreaDeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {botaoAssinaturas, botaoHistorico, botaoRelatorio});
@@ -172,5 +184,6 @@ public class telaInicial extends javax.swing.JFrame {
     private javax.swing.JButton botaoAssinaturas;
     private javax.swing.JButton botaoHistorico;
     private javax.swing.JButton botaoRelatorio;
+    private javax.swing.JTextField jtAreaDeStatus;
     // End of variables declaration//GEN-END:variables
 }

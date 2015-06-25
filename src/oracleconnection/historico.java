@@ -5,6 +5,7 @@
  */
 package oracleconnection;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 /**
@@ -18,5 +19,8 @@ public class historico extends JFrame{
         this.user=user;
         this.pass=pass;
     };
+    
+    JButton botaoSair = new JButton();
+    
     
 }
