@@ -8,17 +8,13 @@ package oracleconnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  *
  * @author Adams
  */
-public class telaInicial extends javax.swing.JFrame {
+public final class telaInicial extends javax.swing.JFrame {
 
     /**
      * Creates new form telaInicial
@@ -26,14 +22,13 @@ public class telaInicial extends javax.swing.JFrame {
     String host, user, pass, conexao = null;
     Connection connection;
     
-    JPanel panelBaixo = new JPanel();
-
     public telaInicial(String host, String user, String pass, String conexao) {
         initComponents();
         this.host = host;
         this.user = user;
         this.pass = pass;
         this.conexao = conexao;
+        
         conectar();
     }
     
@@ -44,7 +39,8 @@ public class telaInicial extends javax.swing.JFrame {
                     host,
                     user,
                     pass);
-            jtAreaDeStatus.setText("Conectado com sucesso em "+user);
+            jtAreaDeStatus.setText("Conectado com sucesso!");
+            jtAreaDeStatus2.setText("usuário: " + user);
         } catch (ClassNotFoundException ex) {
             jtAreaDeStatus.setText("Problema: verifique o driver do banco de dados");
         } catch (SQLException ex) {
@@ -67,7 +63,8 @@ public class telaInicial extends javax.swing.JFrame {
         botaoHistorico = new javax.swing.JButton();
         botaoAssinaturas = new javax.swing.JButton();
         botaoRelatorio = new javax.swing.JButton();
-        jtAreaDeStatus = new javax.swing.JTextField();
+        jtAreaDeStatus = new javax.swing.JLabel();
+        jtAreaDeStatus2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -92,7 +89,9 @@ public class telaInicial extends javax.swing.JFrame {
             }
         });
 
-        jtAreaDeStatus.setText("jTextField1");
+        jtAreaDeStatus.setText("jLabel1");
+
+        jtAreaDeStatus2.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -104,7 +103,8 @@ public class telaInicial extends javax.swing.JFrame {
                     .addComponent(botaoRelatorio)
                     .addComponent(botaoAssinaturas)
                     .addComponent(botaoHistorico, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtAreaDeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtAreaDeStatus)
+                    .addComponent(jtAreaDeStatus2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -120,8 +120,10 @@ public class telaInicial extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botaoRelatorio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jtAreaDeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addComponent(jtAreaDeStatus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtAreaDeStatus2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {botaoAssinaturas, botaoHistorico, botaoRelatorio});
@@ -184,6 +186,7 @@ public class telaInicial extends javax.swing.JFrame {
     private javax.swing.JButton botaoAssinaturas;
     private javax.swing.JButton botaoHistorico;
     private javax.swing.JButton botaoRelatorio;
-    private javax.swing.JTextField jtAreaDeStatus;
+    private javax.swing.JLabel jtAreaDeStatus;
+    private javax.swing.JLabel jtAreaDeStatus2;
     // End of variables declaration//GEN-END:variables
 }
