@@ -29,27 +29,30 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Adams
  */
-public final class historico extends JFrame{
+public final class historico extends JFrame {
+
     String host, user, pass = null;
     Connection con;
-    int tamx=500, tamy=100;
+    int tamx = 500, tamy = 100;
     JFrame j;
     JPanel panelBaixo, panelTopo;
     JButton remover, alterar, inserir, sair;
     JTable tabelaHistorico;
     JScrollPane paneHistorico;
     JTextField jtAreaDeStatus;
-    
-    public historico(String host, String user, String pass, Connection con){
-        this.host=host;
-        this.user=user;
-        this.pass=pass;
+
+    public historico(String host, String user, String pass, Connection con) {
+        this.host = host;
+        this.user = user;
+        this.pass = pass;
         this.con = con;
-        
+
         exibeJanelaHistorico();
-    };
+    }
+
+    ;
     
-    public void exibeJanelaHistorico(){
+    public void exibeJanelaHistorico() {
         //janela principal
         j = new JFrame("ICMC-USP - SCC0240 - Projeto 3");
         j.setSize(700, 600);
@@ -71,38 +74,35 @@ public final class historico extends JFrame{
         sair.setText("Fechar");
         //área de status
         jtAreaDeStatus = new JTextField();
-        
+
         panelBaixo.add(inserir);
         panelBaixo.add(remover);
         panelBaixo.add(alterar);
         panelBaixo.add(sair);
         panelBaixo.add(jtAreaDeStatus);
-        
-        eventosBotoes();
-        tabelaHistorico = exibeHistorico(j,con,"HISTORICODEPAGAMENTO");
-        
-        j.setVisible(true);
-        j.addWindowFocusListener(new WindowFocusListener(){
 
-            public void windowGainedFocus(WindowEvent we) {
-                //pra faze rum dia ae, se clicar na janela atualizar a tabela historico
+        eventosBotoes();
+        tabelaHistorico = exibeHistorico(j, con, "HISTORICODEPAGAMENTO");
+
+        j.setVisible(true);
+        j.addWindowFocusListener(new WindowFocusListener() {
+
+            public void windowGainedFocus(WindowEvent we) { 
+                //atualizar tabela sempre que ganhar foco
             }
 
             public void windowLostFocus(WindowEvent we) {
             }
-            
         });
-
-        
     }
-    
-    public void eventosBotoes(){
-        sair.addActionListener(new ActionListener(){
+
+    public void eventosBotoes() {
+        sair.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 j.dispose(); //fecha janela atual
             }
         });
-        inserir.addActionListener(new ActionListener(){
+        inserir.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
                 inserirHistorico hist;
@@ -112,25 +112,45 @@ public final class historico extends JFrame{
                 hist.setVisible(true);
             }
         });
+        remover.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                int row = tabelaHistorico.getSelectedRow();
+                String pk1 = tabelaHistorico.getValueAt(row, 0).toString();
+                String pk2 = tabelaHistorico.getValueAt(row, 2).toString();
+                
+                deletar(pk1, pk2, con);
+                
+            }
+        });
     }
     
-    public JTable exibeHistorico(JFrame principal, Connection conexao, String tablename){
+    public void deletar(String pk1, String pk2, Connection conexao)
+    {
+        
+        String input = "DELETE FROM HISTORICODEPAGAMENTO WHERE USUARIO = "
+                +pk1+ " AND DATA = to_char("+pk2+",'DD/MM/YY')";
+        System.out.println(input);
+        
+    }
+
+    public JTable exibeHistorico(JFrame principal, Connection conexao, String tablename) {
         String input;
-        
+        int count = 0;
         input = "SELECT * FROM " + tablename;
-        
+
         Vector columnNames = new Vector();
         Vector data = new Vector();
-        
+
         try {
-            
+
             PreparedStatement instrucao = conexao.prepareStatement(input);
             //construção da classe PreparedStatement para passagem de parâmetros
 
             ResultSet result = instrucao.executeQuery(); //recebe os resultados da query
             ResultSetMetaData resultados = result.getMetaData(); //cria metadados dos resultados
             int colunas = resultados.getColumnCount(); //pega quantidade de colunas
-            int count = 0;
+
             while (result.next()) {
                 count++;
             }
@@ -149,7 +169,7 @@ public final class historico extends JFrame{
                 }
                 data.addElement(row); //adiciona no vetor de dados as tuplas
             }
-            
+
             result.close();       //encerra a consulta
         } catch (SQLException e) {
             jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
@@ -162,8 +182,8 @@ public final class historico extends JFrame{
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(tATable); //cria o painel para colocar a tabela
         principal.add(scrollPane);
-        jtAreaDeStatus.setText("Tabela " + tablename); //avisa qual tabela está sendo exibida
-        
+        jtAreaDeStatus.setText("Tabela " + tablename + "\n Tuplas: " + count); //avisa qual tabela está sendo exibida
+
         return tATable;
 
     }
