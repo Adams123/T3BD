@@ -133,6 +133,7 @@ public final class telaInicial extends javax.swing.JFrame {
 
     private void botaoHistoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoActionPerformed
         historico hist = new historico(host, user, pass,connection);
+        
     }//GEN-LAST:event_botaoHistoricoActionPerformed
 
     private void botaoAssinaturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAssinaturasActionPerformed

@@ -6,28 +6,23 @@
 package oracleconnection;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Random;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -52,14 +47,12 @@ public final class historico extends JFrame{
         this.con = con;
         
         exibeJanelaHistorico();
-        
-        
     };
     
     public void exibeJanelaHistorico(){
         //janela principal
         j = new JFrame("ICMC-USP - SCC0240 - Projeto 3");
-        j.setSize(700, 500);
+        j.setSize(700, 600);
         j.setLayout(new BorderLayout());
         j.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //definindo áreas de botões
@@ -89,6 +82,18 @@ public final class historico extends JFrame{
         tabelaHistorico = exibeHistorico(j,con,"HISTORICODEPAGAMENTO");
         
         j.setVisible(true);
+        j.addWindowFocusListener(new WindowFocusListener(){
+
+            public void windowGainedFocus(WindowEvent we) {
+                //pra faze rum dia ae, se clicar na janela atualizar a tabela historico
+            }
+
+            public void windowLostFocus(WindowEvent we) {
+            }
+            
+        });
+
+        
     }
     
     public void eventosBotoes(){
@@ -102,9 +107,10 @@ public final class historico extends JFrame{
             public void actionPerformed(ActionEvent ae) {
                 inserirHistorico hist;
                 hist = new inserirHistorico(con);
+                hist.setComboboxes(con);
+                hist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                hist.setVisible(true);
             }
-        
-        
         });
     }
     
