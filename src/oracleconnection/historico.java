@@ -55,8 +55,6 @@ public final class historico extends JFrame
 
         exibeJanelaHistorico();
     }
-
-    ;
     
     public void exibeJanelaHistorico()
     {

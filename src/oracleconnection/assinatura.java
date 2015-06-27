@@ -5,6 +5,7 @@
  */
 package oracleconnection;
 
+import java.sql.Connection;
 import javax.swing.JFrame;
 
 /**
@@ -13,10 +14,12 @@ import javax.swing.JFrame;
  */
 class assinatura extends JFrame {
 String host, user, pass = null;
-    public assinatura(String host, String user, String pass){
+Connection con;
+    public assinatura(String host, String user, String pass, Connection con){
         this.host=host;
         this.user=user;
         this.pass=pass;
+        this.con = con;
     }
     
 }
