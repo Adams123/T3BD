@@ -127,10 +127,22 @@ public final class historico extends JFrame {
     
     public void deletar(String pk1, String pk2, Connection conexao)
     {
-        
+        String data[] = new String[3];
+        for(int i=0;i<3;i++)
+            data[i]=new String();
+        data = pk2.split("-");
+        pk2="";
+        pk2 = pk2.concat(data[2] + "/" + data[1] + "/" + data[0]);
         String input = "DELETE FROM HISTORICODEPAGAMENTO WHERE USUARIO = "
-                +pk1+ " AND DATA = to_char("+pk2+",'DD/MM/YY')";
+                +pk1+ " AND DATA = '"+pk2+"'";
         System.out.println(input);
+        
+        try{
+            PreparedStatement instrucao = conexao.prepareStatement(input);
+            instrucao.executeUpdate();
+        }catch (SQLException e) {
+            jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
+        }
         
     }
 
