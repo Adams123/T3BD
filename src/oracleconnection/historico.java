@@ -187,7 +187,9 @@ public final class historico extends JFrame
                     {
                         public void actionPerformed(ActionEvent ae)
                         {
-                            alterar(boxes[0].getSelectedItem().toString(),
+                            alterar(tabelaHistorico.getValueAt(tabelaHistorico.getSelectedRow(), 0).toString(),
+                                    tabelaHistorico.getValueAt(tabelaHistorico.getSelectedRow(), 2).toString(),
+                                    boxes[0].getSelectedItem().toString(),
                                     boxes[1].getSelectedItem().toString(),
                             boxes[2].getSelectedItem().toString(),
                             con);
@@ -203,9 +205,45 @@ public final class historico extends JFrame
 
         });
     }
-    
-    public void alterar(String usuario, String plano, String dataForma, Connection con)
+    public String arrumaData(String pk2){
+        
+        String data[] = new String[3];
+        for (int i = 0; i < 3; i++)
+        {
+            data[i] = new String();
+        }
+        data = pk2.split("-");
+        pk2 = "";
+        pk2 = pk2.concat(data[2] + "/" + data[1] + "/" + data[0]);
+        return pk2;
+    }
+    public void alterar(String pk1, String pk2, String usuario, String plano, String dataForma, Connection conexao)
     {
+        usuario=usuario.replace("[", "");
+        usuario=usuario.replace("]", "");
+        plano=plano.replace("[", "");
+        plano=plano.replace("]", "");
+        dataForma=dataForma.replace("[", "");
+        dataForma=dataForma.replace("]", "");
+        dataForma=dataForma.replace(",", "");
+        String split[] = dataForma.split(" ");
+        String data = split[0];
+        String forma = split[1];
+        pk2=arrumaData(pk2);
+        
+        String input = "UPDATE HISTORICODEPAGAMENTO SET USUARIO=" + usuario + " ,"
+                + " PLANO = " + plano + ", DATA = '" + data + "',"
+                + " FORMA = '" + forma.toUpperCase() + "'"
+                + " WHERE USUARIO = " + pk1 + " AND DATA = '" + pk2 + "'";
+        
+        try
+        {
+            PreparedStatement instrucao = conexao.prepareStatement(input);
+            instrucao.executeUpdate();
+        }catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + e.getMessage());
+        }
         
     }
 
@@ -306,18 +344,9 @@ public final class historico extends JFrame
     
     public void deletar(String pk1, String pk2, Connection conexao)
     {
-        String data[] = new String[3];
-        for (int i = 0; i < 3; i++)
-        {
-            data[i] = new String();
-        }
-        data = pk2.split("-");
-        pk2 = "";
-        pk2 = pk2.concat(data[2] + "/" + data[1] + "/" + data[0]);
+        pk2 = arrumaData(pk2);
         String input = "DELETE FROM HISTORICODEPAGAMENTO WHERE USUARIO = "
                 + pk1 + " AND DATA = '" + pk2 + "'";
-        System.out.println(input);
-
         try
         {
             PreparedStatement instrucao = conexao.prepareStatement(input);
@@ -326,7 +355,6 @@ public final class historico extends JFrame
         {
             jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
         }
-
     }
 
     public JTable exibeHistorico(JFrame principal, Connection conexao, String tablename)
