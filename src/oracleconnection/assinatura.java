@@ -31,9 +31,10 @@ import javax.swing.table.DefaultTableModel;
  */
 public final class assinatura extends JFrame
 {
+
     String host, user, pass = null;
     Connection con;
-    
+
     int tamx = 500, tamy = 100;
     JFrame j;
     JPanel panelBaixo, panelTopo;
@@ -42,19 +43,20 @@ public final class assinatura extends JFrame
     JScrollPane paneAssinatura;
     JTextField jtAreaDeStatus;
     JComboBox jcSelecao;
-    
+
     public assinatura(String host, String user, String pass, Connection con)
     {
         this.host = host;
         this.user = user;
         this.pass = pass;
         this.con = con;
-        
+
         exibeJanelaAssinatura();
-        
+
     }
-    
-    public void exibeJanelaAssinatura(){
+
+    public void exibeJanelaAssinatura()
+    {
         //janela principal
         j = new JFrame("ICMC-USP - SCC0240 - Projeto 3");
         j.setSize(700, 600);
@@ -74,7 +76,7 @@ public final class assinatura extends JFrame
         alterar.setText("Alterar");
         sair = new JButton();
         sair.setText("Fechar");
-        
+
         jcSelecao = new JComboBox();
         jcSelecao.addItem("Pessoa");
         jcSelecao.addItem("Ator");
@@ -90,13 +92,13 @@ public final class assinatura extends JFrame
         panelBaixo.add(jtAreaDeStatus);
 
         eventosBotoes();
-        
-        tabelaAssinatura = exibeTable(panelTopo,con,"PESSOA");
-        
+
+        tabelaAssinatura = exibeTable(panelTopo, con, "PESSOA");
+
         j.setVisible(true);
     }
-    
-     public JTable exibeTable(JPanel principal, Connection conexao, String tablename)
+
+    public JTable exibeTable(JPanel principal, Connection conexao, String tablename)
     {
         String input;
         int count = 0;
@@ -157,39 +159,44 @@ public final class assinatura extends JFrame
         return tATable;
 
     }
-    
+
     public void eventosBotoes()
     {
-        sair.addActionListener(new ActionListener(){
+        sair.addActionListener(new ActionListener()
+        {
 
             public void actionPerformed(ActionEvent ae)
             {
                 j.dispose();
             }
-            
+
         });
-        inserir.addActionListener(new ActionListener(){
+        inserir.addActionListener(new ActionListener()
+        {
 
             public void actionPerformed(ActionEvent ae)
             {
             }
-            
+
         });
-        alterar.addActionListener(new ActionListener(){
+        alterar.addActionListener(new ActionListener()
+        {
 
             public void actionPerformed(ActionEvent ae)
             {
             }
-            
+
         });
-        remover.addActionListener(new ActionListener(){
+        remover.addActionListener(new ActionListener()
+        {
 
             public void actionPerformed(ActionEvent ae)
             {
             }
-            
+
         });
-        jcSelecao.addActionListener(new ActionListener(){
+        jcSelecao.addActionListener(new ActionListener()
+        {
 
             public void actionPerformed(ActionEvent ae)
             {
@@ -197,10 +204,10 @@ public final class assinatura extends JFrame
                 panelTopo.removeAll();
                 panelTopo.repaint();
                 panelTopo.revalidate();
-                tabelaAssinatura = exibeTable(panelTopo,con,jcSelecao.getSelectedItem().toString());
+                tabelaAssinatura = exibeTable(panelTopo, con, jcSelecao.getSelectedItem().toString());
             }
-            
+
         });
-        
+
     }
 }
