@@ -192,6 +192,14 @@ public final class assinatura extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
+                int row = tabelaAssinatura.getSelectedRow();
+                String pk;
+                if(jcSelecao.getSelectedIndex() == 0)
+                    pk = tabelaAssinatura.getValueAt(row, 0).toString();
+                else
+                    pk = tabelaAssinatura.getValueAt(row, 1).toString();
+                
+                deletar(pk.toUpperCase(), con, jcSelecao.getSelectedItem().toString());
             }
 
         });
@@ -209,5 +217,19 @@ public final class assinatura extends JFrame
 
         });
 
+    }
+
+    public void deletar(String pk1, Connection conexao, String tablename)
+    {
+        String input = "DELETE FROM " + tablename.toUpperCase() + " WHERE NOME = '" + pk1 + "'";
+        
+        try
+        {
+            PreparedStatement instrucao = conexao.prepareStatement(input);
+            instrucao.executeUpdate();
+        } catch (SQLException e)
+        {
+            jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
+        }
     }
 }
