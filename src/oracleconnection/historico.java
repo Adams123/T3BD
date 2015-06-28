@@ -88,7 +88,7 @@ public final class historico extends JFrame
 
         eventosBotoes();
         tabelaHistorico = exibeHistorico(j, con, "HISTORICODEPAGAMENTO");
-
+        j.pack();
         j.setVisible(true);
         j.addWindowFocusListener(new WindowFocusListener()
         {
@@ -123,6 +123,7 @@ public final class historico extends JFrame
                 hist.setComboboxes(con);
                 hist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 hist.setVisible(true);
+                
             }
         });
         remover.addActionListener(new ActionListener()

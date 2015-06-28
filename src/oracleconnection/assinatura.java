@@ -6,6 +6,9 @@
 package oracleconnection;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +16,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,6 +41,7 @@ public final class assinatura extends JFrame
     JTable tabelaAssinatura;
     JScrollPane paneAssinatura;
     JTextField jtAreaDeStatus;
+    JComboBox jcSelecao;
     
     public assinatura(String host, String user, String pass, Connection con)
     {
@@ -69,21 +74,29 @@ public final class assinatura extends JFrame
         alterar.setText("Alterar");
         sair = new JButton();
         sair.setText("Fechar");
+        
+        jcSelecao = new JComboBox();
+        jcSelecao.addItem("Pessoa");
+        jcSelecao.addItem("Ator");
+        jcSelecao.addItem("Diretor");
         //área de status
         jtAreaDeStatus = new JTextField();
 
         panelBaixo.add(inserir);
         panelBaixo.add(remover);
         panelBaixo.add(alterar);
+        panelBaixo.add(jcSelecao);
         panelBaixo.add(sair);
         panelBaixo.add(jtAreaDeStatus);
 
-        tabelaAssinatura = exibeAssinatura(j, con, "HISTORICODEPAGAMENTO");
+        eventosBotoes();
+        
+        tabelaAssinatura = exibeTable(panelTopo,con,"PESSOA");
         
         j.setVisible(true);
     }
     
-    public JTable exibeAssinatura(JFrame principal, Connection conexao, String tablename)
+     public JTable exibeTable(JPanel principal, Connection conexao, String tablename)
     {
         String input;
         int count = 0;
@@ -143,5 +156,51 @@ public final class assinatura extends JFrame
 
         return tATable;
 
+    }
+    
+    public void eventosBotoes()
+    {
+        sair.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent ae)
+            {
+                j.dispose();
+            }
+            
+        });
+        inserir.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent ae)
+            {
+            }
+            
+        });
+        alterar.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent ae)
+            {
+            }
+            
+        });
+        remover.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent ae)
+            {
+            }
+            
+        });
+        jcSelecao.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent ae)
+            {
+                tabelaAssinatura.removeAll();
+                panelTopo.removeAll();
+                panelTopo.repaint();
+                panelTopo.revalidate();
+                tabelaAssinatura = exibeTable(panelTopo,con,jcSelecao.getSelectedItem().toString());
+            }
+            
+        });
+        
     }
 }
