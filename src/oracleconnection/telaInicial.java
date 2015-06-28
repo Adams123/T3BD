@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -29,7 +30,10 @@ public final class telaInicial extends javax.swing.JFrame {
         this.pass = pass;
         this.conexao = conexao;
         
-        conectar();
+        if(!conectar())
+        {
+            JOptionPane.showMessageDialog(null, "ERRO: verifique seu usuário e senha");
+        }
     }
     
     public boolean conectar() {
@@ -46,7 +50,7 @@ public final class telaInicial extends javax.swing.JFrame {
         } catch (SQLException ex) {
             jtAreaDeStatus.setText("Problema: verifique seu usuário e senha");
         }
-        return false;
+        return true;
     }
 
     private telaInicial() {}
@@ -132,18 +136,16 @@ public final class telaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botaoHistoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoActionPerformed
-        historico hist = new historico(host, user, pass,connection);
-        
+        historico historico;
+        historico = new historico(host, user, pass,connection);
     }//GEN-LAST:event_botaoHistoricoActionPerformed
 
     private void botaoAssinaturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAssinaturasActionPerformed
-        JFrame assin = new assinatura(host, user, pass);
-        assin.setVisible(true);
+        assinatura assin = new assinatura(host, user, pass,connection);
     }//GEN-LAST:event_botaoAssinaturasActionPerformed
 
     private void botaoRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoRelatorioActionPerformed
-        JFrame rel = new relatorio(host, user, pass);
-        rel.setVisible(true);
+        relatorio rel = new relatorio(host, user, pass,connection);
     }//GEN-LAST:event_botaoRelatorioActionPerformed
 
     /**
