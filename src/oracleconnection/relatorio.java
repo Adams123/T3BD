@@ -5,15 +5,26 @@
  */
 package oracleconnection;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfTemplate;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.BorderLayout;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -27,8 +38,10 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Adams
  */
-final class relatorio extends JFrame {
-String host, user, pass = null;
+final class relatorio extends JFrame
+{
+
+    String host, user, pass = null;
     Connection con;
     JFrame j;
     JPanel panelBaixo, panelTopo;
@@ -36,16 +49,18 @@ String host, user, pass = null;
     JTable tabelaRelatorio;
     JScrollPane paneRelatorio;
 
-    public relatorio(String host, String user, String pass, Connection con){
-        this.host=host;
-        this.user=user;
-        this.pass=pass;
-        this.con=con;
-        
+    public relatorio(String host, String user, String pass, Connection con)
+    {
+        this.host = host;
+        this.user = user;
+        this.pass = pass;
+        this.con = con;
+
         exibeJanelaRelatorio();
     }
-    
-    public void exibeJanelaRelatorio(){
+
+    public void exibeJanelaRelatorio()
+    {
         j = new JFrame("ICMC-USP - SCC0240 - Projeto 3");
         j.setSize(700, 600);
         j.setLayout(new BorderLayout());
@@ -69,8 +84,9 @@ String host, user, pass = null;
 
         j.setVisible(true);
     }
-    
-    public void eventosBotoes(){
+
+    public void eventosBotoes()
+    {
         sair.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent ae)
@@ -82,27 +98,54 @@ String host, user, pass = null;
         {
             public void actionPerformed(ActionEvent ae)
             {
-                j.dispose(); //fecha janela atual
+                pdfWriter pdf = new pdfWriter("Teste", "Testando");
+                try
+                {
+                    Document doc = new Document();
+                    PdfWriter writer;
+                    writer = PdfWriter.getInstance(doc, new FileOutputStream(pdf.getPath() + ".pdf"));
+                    doc.open();
+                    
+                    PdfContentByte cb = writer.getDirectContent();
+                    cb.saveState();
+                    PdfTemplate tp = cb.createTemplate(500, 500);
+                    Graphics2D g2;
+                    
+                    g2 = tp.createGraphicsShapes(500, 500);
+                    tabelaRelatorio.print(g2);
+                    g2.dispose();
+                    cb.addTemplate(tp, 30,300);
+                    cb.restoreState();
+                    
+                    doc.close();
+                } catch (FileNotFoundException ex)
+                {
+                    Logger.getLogger(pdfWriter.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (DocumentException ex)
+                {
+                    Logger.getLogger(pdfWriter.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
-    
-    public JTable exibeRelatorio(JFrame principal, Connection conexao){
+
+    public JTable exibeRelatorio(JFrame principal, Connection conexao)
+    {
         String input;
         int foi = 0;
         int count = 0;
-        input = "SELECT I.PERFIL,I.LINGUA,F.TITULO FROM FILME F, AUDIOFILME A, LEGENDAFILME L, " + 
-                "IDIOMAPERFIL I, ASSISTE S, FICAAMIGO FC, AVALIACAO V\n" +
-                "WHERE F.TITULO = A.FILME AND\n" +
-                "L.FILME = F.TITULO AND\n" +
-                "(I.LINGUA = A.AUDIO OR I.LINGUA = L.LEGENDA)\n" +
-                "AND FC.PERFILA = I.PERFIL\n" +
-                "AND ((S.PERFIL = FC.PERFILB\n" +
-                "AND S.FILME = F.TITULO)\n" +
-                "OR (V.FILME = F.TITULO \n" +
-                "AND V.PERFIL = FC.PERFILB))\n" +
-                "GROUP BY I.PERFIL,I.LINGUA,F.TITULO\n" +
-                "ORDER BY I.PERFIL";
+        input = "SELECT I.PERFIL,I.LINGUA,F.TITULO FROM FILME F, AUDIOFILME A, LEGENDAFILME L, "
+                + "IDIOMAPERFIL I, ASSISTE S, FICAAMIGO FC, AVALIACAO V\n"
+                + "WHERE F.TITULO = A.FILME AND\n"
+                + "L.FILME = F.TITULO AND\n"
+                + "(I.LINGUA = A.AUDIO OR I.LINGUA = L.LEGENDA)\n"
+                + "AND FC.PERFILA = I.PERFIL\n"
+                + "AND ((S.PERFIL = FC.PERFILB\n"
+                + "AND S.FILME = F.TITULO)\n"
+                + "OR (V.FILME = F.TITULO \n"
+                + "AND V.PERFIL = FC.PERFILB))\n"
+                + "GROUP BY I.PERFIL,I.LINGUA,F.TITULO\n"
+                + "ORDER BY I.PERFIL";
 
         Vector columnNames = new Vector();
         Vector data = new Vector();
@@ -116,7 +159,7 @@ String host, user, pass = null;
             ResultSet result = instrucao.executeQuery(); //recebe os resultados da query
             ResultSetMetaData resultados = result.getMetaData(); //cria metadados dos resultados
             int colunas = resultados.getColumnCount(); //pega quantidade de colunas
-            
+
             while (result.next())
             {
                 count++;
