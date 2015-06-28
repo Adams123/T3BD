@@ -9,6 +9,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.BorderLayout;
@@ -98,25 +99,22 @@ final class relatorio extends JFrame
         {
             public void actionPerformed(ActionEvent ae)
             {
-                pdfWriter pdf = new pdfWriter("Teste", "Testando");
+                pdfWriter pdf = new pdfWriter();
+                String path = pdf.getPath();
                 try
                 {
                     Document doc = new Document();
-                    PdfWriter writer;
-                    writer = PdfWriter.getInstance(doc, new FileOutputStream(pdf.getPath() + ".pdf"));
+                    PdfWriter.getInstance(doc, new FileOutputStream(path + ".pdf"));
                     doc.open();
                     
-                    PdfContentByte cb = writer.getDirectContent();
-                    cb.saveState();
-                    PdfTemplate tp = cb.createTemplate(500, 500);
-                    Graphics2D g2;
+                    PdfPTable pdfTable = new PdfPTable(tabelaRelatorio.getColumnCount());
                     
-                    g2 = tp.createGraphicsShapes(500, 500);
-                    tabelaRelatorio.print(g2);
-                    g2.dispose();
-                    cb.addTemplate(tp, 30,300);
-                    cb.restoreState();
-                    
+                    for(int i=0;i<tabelaRelatorio.getColumnCount();i++)
+                        pdfTable.addCell(tabelaRelatorio.getColumnName(i));
+                    for(int row = 0;row<tabelaRelatorio.getRowCount();row++)
+                        for(int col = 0;col<tabelaRelatorio.getColumnCount();col++)
+                            pdfTable.addCell(tabelaRelatorio.getModel().getValueAt(row, col).toString());
+                    pdfWriter.addTitlePage(doc, pdfTable);
                     doc.close();
                 } catch (FileNotFoundException ex)
                 {
@@ -132,9 +130,10 @@ final class relatorio extends JFrame
     public JTable exibeRelatorio(JFrame principal, Connection conexao)
     {
         String input;
-        int foi = 0;
         int count = 0;
-        input = "SELECT I.PERFIL,I.LINGUA,F.TITULO FROM FILME F, AUDIOFILME A, LEGENDAFILME L, "
+        input = "SELECT I.PERFIL AS \"Perfil Avaliador\" ,"
+                + "I.LINGUA AS \"Lingua Preferida\" ,"
+                + "F.TITULO AS \"Titulo Avaliado\" FROM FILME F, AUDIOFILME A, LEGENDAFILME L, "
                 + "IDIOMAPERFIL I, ASSISTE S, FICAAMIGO FC, AVALIACAO V\n"
                 + "WHERE F.TITULO = A.FILME AND\n"
                 + "L.FILME = F.TITULO AND\n"
@@ -149,13 +148,13 @@ final class relatorio extends JFrame
 
         Vector columnNames = new Vector();
         Vector data = new Vector();
-        System.out.println(foi++);
+        
         try
         {
 
             PreparedStatement instrucao = conexao.prepareStatement(input);
             //construção da classe PreparedStatement para passagem de parâmetros
-            System.out.println(foi++);
+            
             ResultSet result = instrucao.executeQuery(); //recebe os resultados da query
             ResultSetMetaData resultados = result.getMetaData(); //cria metadados dos resultados
             int colunas = resultados.getColumnCount(); //pega quantidade de colunas
@@ -172,7 +171,7 @@ final class relatorio extends JFrame
             {
                 columnNames.addElement(resultados.getColumnName(i)); //adiciona os nomes das colunas ao vetor de nomes
             }
-            System.out.println(foi++);
+            
             result = instrucao.executeQuery();//reposiciona ponteiro de leitura dos resultados
             while (result.next())
             {
@@ -183,12 +182,12 @@ final class relatorio extends JFrame
                 }
                 data.addElement(row); //adiciona no vetor de dados as tuplas
             }
-            System.out.println(foi++);
+            
             result.close();       //encerra a consulta
         } catch (SQLException e)
         {
         }
-        System.out.println(foi++);
+        
         //cria tabela e painel novo para exibir as consultas, retornando a mesma
         DefaultTableModel d = new DefaultTableModel(data, columnNames);
         JTable tATable = new JTable(d);
