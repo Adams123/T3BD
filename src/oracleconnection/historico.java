@@ -194,7 +194,7 @@ public final class historico extends JFrame
                             con);
                         }
                     });
-                    
+                    alterar.pack();
                     alterar.setVisible(true);
                 } else
                 {
@@ -326,16 +326,16 @@ public final class historico extends JFrame
             jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
         }
 
-        for (int i = 0; i < data1.capacity(); i++)
+        for (int i = 0; i < data1.size(); i++)
         {
             boxes[0].addItem(data1.elementAt(i).toString());
         }
 
-        for (int i = 0; i < data2.capacity(); i++)
+        for (int i = 0; i < data2.size(); i++)
         {
             boxes[1].addItem(data2.elementAt(i).toString());
         }
-        for (int i = 0; i < data3.capacity(); i++)
+        for (int i = 0; i < data3.size(); i++)
         {
             boxes[2].addItem(data3.get(i).toString());
         }

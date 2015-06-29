@@ -18,6 +18,7 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -81,6 +82,7 @@ public final class assinatura extends JFrame
         jcSelecao.addItem("Pessoa");
         jcSelecao.addItem("Ator");
         jcSelecao.addItem("Diretor");
+        jcSelecao.addItem("Profissao");
         //área de status
         jtAreaDeStatus = new JTextField();
 
@@ -176,6 +178,7 @@ public final class assinatura extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
+
             }
 
         });
@@ -184,6 +187,98 @@ public final class assinatura extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
+                if (tabelaAssinatura.getSelectedRow() != -1)
+                {
+                    final JTextField texts[];
+                    int opcoes = 2;
+                    if (jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PESSOA") == 0)
+                    {
+                        opcoes = 3;
+                    }
+                    if (jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PROFISSAO") == 0)
+                    {
+                        opcoes = 1;
+                    }
+                    texts = new JTextField[3];
+                    for(int i=0;i<3;i++)
+                    {
+                        texts[i] = new JTextField();
+                        texts[i].setColumns(20);
+                    }
+                    JFrame alterar = new JFrame();
+                    alterar.setSize(300, 200);
+                    alterar.setLayout(new BorderLayout());
+                    alterar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                    JPanel panelEsq = new JPanel();
+                    JPanel panelDir = new JPanel();
+                    JPanel panelBot = new JPanel();
+                    panelEsq.setLayout(new GridLayout(opcoes, 1));
+                    panelDir.setLayout(new GridLayout(opcoes, 1));
+                    alterar.add(panelEsq, BorderLayout.WEST);
+                    alterar.add(panelDir, BorderLayout.EAST);
+                    alterar.add(panelBot, BorderLayout.SOUTH);
+
+                    JButton btAlterar = new JButton("Alterar");
+                    panelBot.add(btAlterar);
+
+                    final JComboBox box= new JComboBox();
+                    JLabel labels[] = new JLabel[opcoes];
+                    for (int i = 0; i < opcoes; i++)
+                    {
+                        labels[i] = new JLabel();
+                    }
+                    if(opcoes!=1)
+                        setFksBoxes(box, jcSelecao.getSelectedItem().toString().toUpperCase());
+                    
+                    if (opcoes == 1)
+                    {
+                        panelDir.add(texts[0]);
+                        labels[0].setText("Profissão");
+                    } else if (opcoes == 2)
+                    {
+                        panelDir.add(texts[0]);
+                        panelDir.add(box);
+                        labels[0].setText("Idade");
+                        labels[1].setText("Nome");
+                    } else
+                    {
+                        panelDir.add(texts[0]);
+                        panelDir.add(box);
+                        panelDir.add(texts[1]);
+                        labels[0].setText("Nome");
+                        labels[1].setText("Profissão");
+                        labels[2].setText("Idade");
+                    }
+
+                    for (int i = 0; i < opcoes; i++)
+                        panelEsq.add(labels[i]);
+                    
+                    alterar.pack();
+                    
+                    btAlterar.addActionListener(new ActionListener()
+                    {
+                        public void actionPerformed(ActionEvent ae)
+                        {
+                            if(jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PROFISSAO")==0)
+                                alterar(texts[0].getText(),null,null,
+                                        jcSelecao.getSelectedItem().toString().toUpperCase());
+                            else if(jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PESSOA") == 0)
+                            {
+                                alterar(texts[0].getText(),box.getSelectedItem().toString(),texts[1].getText(),
+                                        jcSelecao.getSelectedItem().toString().toUpperCase());
+                            }
+                            else
+                                alterar(texts[0].getText(),box.getSelectedItem().toString(),null,
+                                        jcSelecao.getSelectedItem().toString().toUpperCase());
+                        }
+                    });
+
+                    alterar.setVisible(true);
+                } else
+                {
+                    jtAreaDeStatus.setText("Por favor selecione uma tupla");
+                }
             }
 
         });
@@ -194,11 +289,14 @@ public final class assinatura extends JFrame
             {
                 int row = tabelaAssinatura.getSelectedRow();
                 String pk;
-                if(jcSelecao.getSelectedIndex() == 0)
+                if (jcSelecao.getSelectedIndex() == 0 || jcSelecao.getSelectedIndex() == 3)
+                {
                     pk = tabelaAssinatura.getValueAt(row, 0).toString();
-                else
+                } else
+                {
                     pk = tabelaAssinatura.getValueAt(row, 1).toString();
-                
+                }
+
                 deletar(pk.toUpperCase(), con, jcSelecao.getSelectedItem().toString());
             }
 
@@ -219,10 +317,70 @@ public final class assinatura extends JFrame
 
     }
 
-    public void deletar(String pk1, Connection conexao, String tablename)
+    public void alterar(String op1, String op2, String op3, String tablename)
     {
-        String input = "DELETE FROM " + tablename.toUpperCase() + " WHERE NOME = '" + pk1 + "'";
         
+    }
+    
+    public void setFksBoxes(JComboBox box, String tablename)
+    {
+        String input;
+        tablename = tablename.toUpperCase();
+        if (tablename.compareTo("PESSOA") == 0)
+        {
+            input = "SELECT PROFISSAO FROM PROFISSAO";
+        }
+        else
+            input = "SELECT NOME FROM PESSOA";
+
+        Vector data = new Vector();
+
+        try
+        {
+
+            PreparedStatement instrucao = con.prepareStatement(input);
+            ResultSet result = instrucao.executeQuery(); //recebe os resultados da query
+            ResultSetMetaData resultados = result.getMetaData(); //cria metadados dos resultados
+
+            int colunas = resultados.getColumnCount(); //pega quantidade de colunas
+            int count = 0;
+            while (result.next())
+            {
+                count++;
+            }
+            if (count == 0)
+            {
+                jtAreaDeStatus.setText("Nenhum resultado encontrado");
+                return;
+            }
+            result = instrucao.executeQuery();//reposiciona ponteiro de leitura dos resultados
+            while (result.next())
+            {
+                Vector row = new Vector(colunas);     //cria as tuplas com os dados para exibicao
+                for (int i = 1; i <= colunas; i++)
+                {
+                    row.addElement(result.getObject(i));
+                }
+                data.addElement(row); //adiciona no vetor de dados as tuplas
+            }
+
+            result.close();       //encerra a consulta
+
+        } catch (SQLException e)
+        {
+            jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
+        }
+
+        for (int i = 0; i < data.size(); i++)
+        {
+            box.addItem(data.elementAt(i).toString());
+        }
+    }
+
+    public void deletar(String pk, Connection conexao, String tablename)
+    {
+        String input = "DELETE FROM " + tablename.toUpperCase() + " WHERE NOME = '" + pk + "'";
+
         try
         {
             PreparedStatement instrucao = conexao.prepareStatement(input);
