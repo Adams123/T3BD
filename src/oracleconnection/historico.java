@@ -216,7 +216,8 @@ public final class historico extends JFrame
         pk2 = pk2.concat(data[2] + "/" + data[1] + "/" + data[0]);
         return pk2;
     }
-    public void alterar(String pk1, String pk2, String usuario, String plano, String dataForma, Connection conexao)
+    public void alterar(String pk1, String pk2, String usuario, 
+            String plano, String dataForma, Connection conexao)
     {
         usuario=usuario.replace("[", "");
         usuario=usuario.replace("]", "");

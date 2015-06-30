@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -200,7 +201,7 @@ public final class assinatura extends JFrame
                         opcoes = 1;
                     }
                     texts = new JTextField[3];
-                    for(int i=0;i<3;i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         texts[i] = new JTextField();
                         texts[i].setColumns(20);
@@ -222,15 +223,17 @@ public final class assinatura extends JFrame
                     JButton btAlterar = new JButton("Alterar");
                     panelBot.add(btAlterar);
 
-                    final JComboBox box= new JComboBox();
+                    final JComboBox box = new JComboBox();
                     JLabel labels[] = new JLabel[opcoes];
                     for (int i = 0; i < opcoes; i++)
                     {
                         labels[i] = new JLabel();
                     }
-                    if(opcoes!=1)
+                    if (opcoes != 1)
+                    {
                         setFksBoxes(box, jcSelecao.getSelectedItem().toString().toUpperCase());
-                    
+                    }
+
                     if (opcoes == 1)
                     {
                         panelDir.add(texts[0]);
@@ -252,25 +255,32 @@ public final class assinatura extends JFrame
                     }
 
                     for (int i = 0; i < opcoes; i++)
+                    {
                         panelEsq.add(labels[i]);
-                    
+                    }
+
                     alterar.pack();
-                    
+
                     btAlterar.addActionListener(new ActionListener()
                     {
                         public void actionPerformed(ActionEvent ae)
                         {
-                            if(jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PROFISSAO")==0)
-                                alterar(texts[0].getText(),null,null,
-                                        jcSelecao.getSelectedItem().toString().toUpperCase());
-                            else if(jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PESSOA") == 0)
+                            if (jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PROFISSAO") == 0)
                             {
-                                alterar(texts[0].getText(),box.getSelectedItem().toString(),texts[1].getText(),
-                                        jcSelecao.getSelectedItem().toString().toUpperCase());
+                                alterar(texts[0].getText(), null, null,
+                                        jcSelecao.getSelectedItem().toString().toUpperCase(),
+                                        tabelaAssinatura.getValueAt(tabelaAssinatura.getSelectedRow(), 0).toString(), con); //envia a PK de profissao, que é uma só
+                            } else if (jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PESSOA") == 0)
+                            {
+                                alterar(texts[0].getText(), box.getSelectedItem().toString(), texts[1].getText(),
+                                        jcSelecao.getSelectedItem().toString().toUpperCase(),
+                                        tabelaAssinatura.getValueAt(tabelaAssinatura.getSelectedRow(), 0).toString(), con);
+                            } else
+                            {
+                                alterar(texts[0].getText(), box.getSelectedItem().toString(), null,
+                                        jcSelecao.getSelectedItem().toString().toUpperCase(),
+                                        tabelaAssinatura.getValueAt(tabelaAssinatura.getSelectedRow(), 1).toString(), con);
                             }
-                            else
-                                alterar(texts[0].getText(),box.getSelectedItem().toString(),null,
-                                        jcSelecao.getSelectedItem().toString().toUpperCase());
                         }
                     });
 
@@ -317,11 +327,49 @@ public final class assinatura extends JFrame
 
     }
 
-    public void alterar(String op1, String op2, String op3, String tablename)
+    public void alterar(String op1, String op2, String op3, String tablename, String pk, Connection con)
     {
+        int ops = 1;
+        op1 = op1.replace("[", "");
+        op1 = op1.replace("]", "");
+        pk = pk.replace("[", "");
+        pk = pk.replace("]", "");
+        if (op2 != null)
+        {
+            ops = 2;
+            op2 = op2.replace("]", "");
+            op2 = op2.replace("[", "");
+        }
+        if (op3 != null)
+        {
+            ops = 3;
+            op3 = op3.replace("]", "");
+            op3 = op3.replace("[", "");
+        }
+        System.out.println(op1 + " " + op2 + " " + op3 + " " + tablename + " " + pk);
+        String input;
+        if(ops==1)
+            input = "UPDATE "+ tablename + " SET PROFISSAO='" + op1 
+                + "' WHERE PROFISSAO = '" + pk.toUpperCase() + "'";
+        if(ops==2)
+            input = "UPDATE " + tablename + " SET IDADE = " + op1 + ", NOME = '" + op2 + "'"
+                    + " WHERE NOME = '" + pk.toUpperCase() + "'";
+        else
+            input = "UPDATE " + tablename + "SET NOME = '" + op1 + "', "
+                    + "PROFISSAO = '" + op2 + "', IDADE = " + op3
+                    + " WHERE NOME = '" + pk.toUpperCase() + "'";
         
+        System.out.println(input);
+        try
+        {
+            PreparedStatement instrucao = con.prepareStatement(input);
+            instrucao.executeUpdate();
+        }catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + e.getMessage());
+        }
     }
-    
+
     public void setFksBoxes(JComboBox box, String tablename)
     {
         String input;
@@ -329,9 +377,10 @@ public final class assinatura extends JFrame
         if (tablename.compareTo("PESSOA") == 0)
         {
             input = "SELECT PROFISSAO FROM PROFISSAO";
-        }
-        else
+        } else
+        {
             input = "SELECT NOME FROM PESSOA";
+        }
 
         Vector data = new Vector();
 
