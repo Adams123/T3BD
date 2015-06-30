@@ -179,7 +179,11 @@ public final class assinatura extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
-
+                JComboBox fks = new JComboBox();
+                setFksBoxes(fks, jcSelecao.getSelectedItem().toString().toUpperCase());
+                inserirAssinatura assin = new inserirAssinatura(con,
+                        jcSelecao.getSelectedItem().toString().toUpperCase(),fks);
+                
             }
 
         });
@@ -334,32 +338,27 @@ public final class assinatura extends JFrame
         op1 = op1.replace("]", "");
         pk = pk.replace("[", "");
         pk = pk.replace("]", "");
+        String input;
+        input = "UPDATE "+ tablename + " SET PROFISSAO='" + op1 
+                + "' WHERE PROFISSAO = '" + pk.toUpperCase() + "'";
         if (op2 != null)
         {
             ops = 2;
             op2 = op2.replace("]", "");
             op2 = op2.replace("[", "");
+                input = "UPDATE " + tablename + " SET IDADE = " + op1 + ", NOME = '" + op2 + "'"
+                    + " WHERE NOME = '" + pk.toUpperCase() + "'";
+        
         }
         if (op3 != null)
         {
             ops = 3;
             op3 = op3.replace("]", "");
             op3 = op3.replace("[", "");
-        }
-        System.out.println(op1 + " " + op2 + " " + op3 + " " + tablename + " " + pk);
-        String input;
-        if(ops==1)
-            input = "UPDATE "+ tablename + " SET PROFISSAO='" + op1 
-                + "' WHERE PROFISSAO = '" + pk.toUpperCase() + "'";
-        if(ops==2)
-            input = "UPDATE " + tablename + " SET IDADE = " + op1 + ", NOME = '" + op2 + "'"
-                    + " WHERE NOME = '" + pk.toUpperCase() + "'";
-        else
             input = "UPDATE " + tablename + "SET NOME = '" + op1 + "', "
                     + "PROFISSAO = '" + op2 + "', IDADE = " + op3
                     + " WHERE NOME = '" + pk.toUpperCase() + "'";
-        
-        System.out.println(input);
+        }
         try
         {
             PreparedStatement instrucao = con.prepareStatement(input);
