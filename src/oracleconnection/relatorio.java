@@ -7,13 +7,9 @@ package oracleconnection;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.BorderLayout;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -28,10 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -83,6 +79,7 @@ final class relatorio extends JFrame
         eventosBotoes();
         tabelaRelatorio = exibeRelatorio(j, con);
 
+        j.pack();
         j.setVisible(true);
     }
 
@@ -131,9 +128,10 @@ final class relatorio extends JFrame
     {
         String input;
         int count = 0;
-        input = "SELECT I.PERFIL AS \"Perfil Avaliador\" ,"
+        input = "SELECT I.PERFIL AS \"Perfil Amigo Avaliador\" ,"
                 + "I.LINGUA AS \"Lingua Preferida\" ,"
-                + "F.TITULO AS \"Titulo Avaliado\" FROM FILME F, AUDIOFILME A, LEGENDAFILME L, "
+                + "F.TITULO AS \"Titulo Avaliado\" ,"
+                + "FC.PERFILB AS \"Perfil original\" FROM FILME F, AUDIOFILME A, LEGENDAFILME L, "
                 + "IDIOMAPERFIL I, ASSISTE S, FICAAMIGO FC, AVALIACAO V\n"
                 + "WHERE F.TITULO = A.FILME AND\n"
                 + "L.FILME = F.TITULO AND\n"
@@ -143,7 +141,7 @@ final class relatorio extends JFrame
                 + "AND S.FILME = F.TITULO)\n"
                 + "OR (V.FILME = F.TITULO \n"
                 + "AND V.PERFIL = FC.PERFILB))\n"
-                + "GROUP BY I.PERFIL,I.LINGUA,F.TITULO\n"
+                + "GROUP BY I.PERFIL,I.LINGUA,F.TITULO,FC.PERFILB\n"
                 + "ORDER BY I.PERFIL";
 
         Vector columnNames = new Vector();
@@ -186,6 +184,7 @@ final class relatorio extends JFrame
             result.close();       //encerra a consulta
         } catch (SQLException e)
         {
+            JOptionPane.showMessageDialog(null, "Erro SQL: " + e.getMessage());
         }
         
         //cria tabela e painel novo para exibir as consultas, retornando a mesma

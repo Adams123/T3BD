@@ -88,7 +88,7 @@ public final class historico extends JFrame
 
         eventosBotoes();
         tabelaHistorico = exibeHistorico(j, con, "HISTORICODEPAGAMENTO");
-
+        j.pack();
         j.setVisible(true);
         j.addWindowFocusListener(new WindowFocusListener()
         {
@@ -123,6 +123,7 @@ public final class historico extends JFrame
                 hist.setComboboxes(con);
                 hist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 hist.setVisible(true);
+                
             }
         });
         remover.addActionListener(new ActionListener()
@@ -193,7 +194,7 @@ public final class historico extends JFrame
                             con);
                         }
                     });
-                    
+                    alterar.pack();
                     alterar.setVisible(true);
                 } else
                 {
@@ -215,7 +216,8 @@ public final class historico extends JFrame
         pk2 = pk2.concat(data[2] + "/" + data[1] + "/" + data[0]);
         return pk2;
     }
-    public void alterar(String pk1, String pk2, String usuario, String plano, String dataForma, Connection conexao)
+    public void alterar(String pk1, String pk2, String usuario, 
+            String plano, String dataForma, Connection conexao)
     {
         usuario=usuario.replace("[", "");
         usuario=usuario.replace("]", "");
@@ -325,16 +327,16 @@ public final class historico extends JFrame
             jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
         }
 
-        for (int i = 0; i < data1.capacity(); i++)
+        for (int i = 0; i < data1.size(); i++)
         {
             boxes[0].addItem(data1.elementAt(i).toString());
         }
 
-        for (int i = 0; i < data2.capacity(); i++)
+        for (int i = 0; i < data2.size(); i++)
         {
             boxes[1].addItem(data2.elementAt(i).toString());
         }
-        for (int i = 0; i < data3.capacity(); i++)
+        for (int i = 0; i < data3.size(); i++)
         {
             boxes[2].addItem(data3.get(i).toString());
         }

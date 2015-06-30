@@ -8,7 +8,6 @@ package oracleconnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -136,8 +135,7 @@ public final class telaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botaoHistoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoActionPerformed
-        historico historico;
-        historico = new historico(host, user, pass,connection);
+        historico historico = new historico(host, user, pass,connection);
     }//GEN-LAST:event_botaoHistoricoActionPerformed
 
     private void botaoAssinaturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAssinaturasActionPerformed
