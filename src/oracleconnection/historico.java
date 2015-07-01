@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package oracleconnection;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,10 +22,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Adams
- */
 public final class historico extends JFrame
 {
 
@@ -63,7 +52,7 @@ public final class historico extends JFrame
         j.setSize(700, 600);
         j.setLayout(new BorderLayout());
         j.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //definindo áreas de botões
+        //definindo áreas de botões e tabelas
         panelBaixo = new JPanel();
         j.add(panelBaixo, BorderLayout.SOUTH);
         panelTopo = new JPanel();
@@ -79,29 +68,19 @@ public final class historico extends JFrame
         sair.setText("Fechar");
         //área de status
         jtAreaDeStatus = new JTextField();
-
+        //inserindo componentes em seus devidos lugares
         panelBaixo.add(inserir);
         panelBaixo.add(remover);
         panelBaixo.add(alterar);
         panelBaixo.add(sair);
         panelBaixo.add(jtAreaDeStatus);
-
+        //inicializando detecção de eventos
         eventosBotoes();
-        tabelaHistorico = exibeHistorico(j, con, "HISTORICODEPAGAMENTO");
+        //cria a tabela dos históricos
+        tabelaHistorico = exibeHistorico(panelTopo, con, "HISTORICODEPAGAMENTO");
+        
         j.pack();
         j.setVisible(true);
-        j.addWindowFocusListener(new WindowFocusListener()
-        {
-
-            public void windowGainedFocus(WindowEvent we)
-            {
-                //atualizar tabela sempre que ganhar foco
-            }
-
-            public void windowLostFocus(WindowEvent we)
-            {
-            }
-        });
     }
 
     public void eventosBotoes()
@@ -119,8 +98,8 @@ public final class historico extends JFrame
             public void actionPerformed(ActionEvent ae)
             {
                 inserirHistorico hist;
-                hist = new inserirHistorico(con);
-                hist.setComboboxes(con);
+                hist = new inserirHistorico(con); //inserindo no historico
+                hist.setComboboxes(con); //pegando as fks da tabela historico
                 hist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 hist.setVisible(true);
 
@@ -143,26 +122,29 @@ public final class historico extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
+                //ao clicar em alterar, é verificado se tem alguma tupla selecionada
                 if (tabelaHistorico.getSelectedRow() != -1)
                 {
-
+                    //criando janela principal
                     JFrame alterar = new JFrame();
                     alterar.setSize(300, 200);
                     alterar.setLayout(new BorderLayout());
                     alterar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+                    //criando áreas na janela para botoes e campos
                     JPanel panelEsq = new JPanel();
                     JPanel panelDir = new JPanel();
                     JPanel panelBot = new JPanel();
+                    
                     panelEsq.setLayout(new GridLayout(3, 1));
                     panelDir.setLayout(new GridLayout(3, 1));
+                    
                     alterar.add(panelEsq, BorderLayout.WEST);
                     alterar.add(panelDir, BorderLayout.EAST);
                     alterar.add(panelBot, BorderLayout.SOUTH);
 
                     JButton btAlterar = new JButton("Alterar");
                     panelBot.add(btAlterar);
-
+                    //criando caixas de diálogos e de opções (para fks)
                     final JComboBox boxes[] = new JComboBox[3];
                     JLabel labels[] = new JLabel[3];
                     for (int i = 0; i < 3; i++)
@@ -175,13 +157,13 @@ public final class historico extends JFrame
                     labels[0].setText("Usuario");
                     labels[1].setText("Plano");
                     labels[2].setText("Data, Forma");
-
+                    //adicionando as comboboxes e campos nos lugares certos
                     for (int i = 0; i < 3; i++)
                     {
                         panelDir.add(boxes[i]);
                         panelEsq.add(labels[i]);
                     }
-
+                    //ação de clicar em Alterar na interface final
                     btAlterar.addActionListener(new ActionListener()
                     {
                         public void actionPerformed(ActionEvent ae)
@@ -196,7 +178,7 @@ public final class historico extends JFrame
                     });
                     alterar.pack();
                     alterar.setVisible(true);
-                } else
+                } else //caso não tenha sido selecionado nenhuma tupla para alteração
                 {
                     jtAreaDeStatus.setText("Por favor selecione uma tupla");
                 }
@@ -205,7 +187,8 @@ public final class historico extends JFrame
         });
     }
 
-    public String arrumaData(String pk2)
+    public String arrumaData(String pk2) //deixa a data no formato de inserção 
+            //correto para o banco de dados (dd/mm/yy)
     {
 
         String data[] = new String[3];
@@ -222,6 +205,7 @@ public final class historico extends JFrame
     public void alterar(String pk1, String pk2, String usuario,
             String plano, String dataForma, Connection conexao)
     {
+        //removendo caracteres das strings e pks
         usuario = usuario.replace("[", "");
         usuario = usuario.replace("]", "");
         plano = plano.replace("[", "");
@@ -239,6 +223,7 @@ public final class historico extends JFrame
                 + " FORMA = '" + forma.toUpperCase() + "'"
                 + " WHERE USUARIO = " + pk1 + " AND DATA = '" + pk2 + "'";
 
+        //realizando a atualizacao
         try
         {
             PreparedStatement instrucao = conexao.prepareStatement(input);
@@ -251,6 +236,7 @@ public final class historico extends JFrame
     }
 
     public void setFksBoxes(JComboBox boxes[])
+            //metodo para montar comboboxes necessárias contendo as fks da tabela historicodepagamento
     {
         String input1 = "SELECT U.CPF FROM USUARIO U";
         String input2 = "SELECT P.CODPLANO FROM PLANO P";
@@ -281,7 +267,7 @@ public final class historico extends JFrame
             int colunas3 = resultados3.getColumnCount(); //pega quantidade de colunas
 
             int count = 0;
-            while (result1.next() || result2.next() || result3.next())
+            while (result1.next() || result2.next() || result3.next()) //verifica se algum resultado retornou nulo
             {
                 count++;
             }
@@ -318,10 +304,10 @@ public final class historico extends JFrame
                 {
                     row.addElement(result3.getObject(i));
                 }
-                data3.addElement(row);
+                data3.addElement(row);//adiciona no vetor de dados as tuplas
             }
 
-            result1.close();       //encerra a consulta
+            result1.close();       //encerra as consultas
             result2.close();
             result3.close();
 
@@ -330,7 +316,7 @@ public final class historico extends JFrame
             jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
         }
 
-        for (int i = 0; i < data1.size(); i++)
+        for (int i = 0; i < data1.size(); i++) //insere os resultados nas comboboxes
         {
             boxes[0].addItem(data1.elementAt(i).toString());
         }
@@ -346,6 +332,7 @@ public final class historico extends JFrame
     }
 
     public void deletar(String pk1, String pk2, Connection conexao)
+            //deleta da tabela historicodepagamento dado as duas pks da tabela
     {
         pk2 = arrumaData(pk2);
         String input = "DELETE FROM HISTORICODEPAGAMENTO WHERE USUARIO = "
@@ -360,8 +347,9 @@ public final class historico extends JFrame
         }
     }
 
-    public JTable exibeHistorico(JFrame principal, Connection conexao, String tablename)
+    public JTable exibeHistorico(JPanel principal, Connection conexao, String tablename)
     {
+        //insere no panel da janela principal a tabela historicodepagamento
         String input;
         int count = 0;
         input = "SELECT * FROM " + tablename;
@@ -409,10 +397,10 @@ public final class historico extends JFrame
             jtAreaDeStatus.setText("ERRO SQL: " + e.getMessage());
         }
         //cria tabela e painel novo para exibir as consultas, retornando a mesma
-        DefaultTableModel d = new DefaultTableModel(data, columnNames);
-        JTable tATable = new JTable(d);
-        tATable.setCellSelectionEnabled(true);
-        ListSelectionModel cellSelectionModel = tATable.getSelectionModel();
+        DefaultTableModel d = new DefaultTableModel(data, columnNames); //cria um modelo de tabela
+        JTable tATable = new JTable(d); //cria a tabela baseado no modelo de tabela
+        tATable.setCellSelectionEnabled(true); //permite seleção de células
+        ListSelectionModel cellSelectionModel = tATable.getSelectionModel(); 
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(tATable); //cria o painel para colocar a tabela
         principal.add(scrollPane);

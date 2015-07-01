@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package oracleconnection;
 
 import java.awt.BorderLayout;
@@ -27,10 +22,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Adams
- */
 public final class assinatura extends JFrame
 {
 
@@ -97,11 +88,14 @@ public final class assinatura extends JFrame
         eventosBotoes();
 
         tabelaAssinatura = exibeTable(panelTopo, con, "PESSOA");
-
+        j.pack();
         j.setVisible(true);
+        
+        
     }
 
     public JTable exibeTable(JPanel principal, Connection conexao, String tablename)
+            //exibe tudo de uma dada tabela
     {
         String input;
         int count = 0;
@@ -180,11 +174,11 @@ public final class assinatura extends JFrame
             public void actionPerformed(ActionEvent ae)
             {
                 JComboBox fks = new JComboBox();
-                setFksBoxes(fks, jcSelecao.getSelectedItem().toString().toUpperCase());
+                setFksBoxes(fks, jcSelecao.getSelectedItem().toString().toUpperCase()); //cria a combobox de fks da tabela selecionada
                 inserirAssinatura assin = new inserirAssinatura(con,
                         jcSelecao.getSelectedItem().toString().toUpperCase(), fks);
+                //cria a interface de insercao de tuplas na assinatura
                 assin.layoutInsercao();
-
             }
 
         });
@@ -193,10 +187,10 @@ public final class assinatura extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
-                if (tabelaAssinatura.getSelectedRow() != -1)
+                if (tabelaAssinatura.getSelectedRow() != -1) //verifica se selecionou uma tupla
                 {
-                    final JTextField texts[];
-                    int opcoes = 2;
+                    final JTextField texts[]; //campos para digitar valores novos
+                    int opcoes = 2; //quantidade de opcoes disponíveis, 2 no caso de Ator ou Diretor
                     if (jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PESSOA") == 0)
                     {
                         opcoes = 3;
@@ -211,11 +205,12 @@ public final class assinatura extends JFrame
                         texts[i] = new JTextField();
                         texts[i].setColumns(20);
                     }
+                    //cria a janela principal
                     JFrame alterar = new JFrame();
                     alterar.setSize(300, 200);
                     alterar.setLayout(new BorderLayout());
                     alterar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+                    //cria panels para insercao dos componentes
                     JPanel panelEsq = new JPanel();
                     JPanel panelDir = new JPanel();
                     JPanel panelBot = new JPanel();
@@ -224,32 +219,34 @@ public final class assinatura extends JFrame
                     alterar.add(panelEsq, BorderLayout.WEST);
                     alterar.add(panelDir, BorderLayout.EAST);
                     alterar.add(panelBot, BorderLayout.SOUTH);
-
+                    
                     JButton btAlterar = new JButton("Alterar");
                     panelBot.add(btAlterar);
-
+                    //cria uma combobox com as fks da tabela correspondente
                     final JComboBox box = new JComboBox();
                     JLabel labels[] = new JLabel[opcoes];
+                    
                     for (int i = 0; i < opcoes; i++)
                     {
                         labels[i] = new JLabel();
                     }
-                    if (opcoes != 1)
+                    
+                    if (opcoes != 1) //pega fk no caso de nao ser tabela profissao
                     {
                         setFksBoxes(box, jcSelecao.getSelectedItem().toString().toUpperCase());
                     }
 
-                    if (opcoes == 1)
+                    if (opcoes == 1) //monta para o caso da tabela profissão
                     {
                         panelDir.add(texts[0]);
                         labels[0].setText("Profissão");
-                    } else if (opcoes == 2)
+                    } else if (opcoes == 2) //monta para o caso da tabela Ator ou Diretor
                     {
                         panelDir.add(texts[0]);
                         panelDir.add(box);
                         labels[0].setText("Idade");
                         labels[1].setText("Nome");
-                    } else
+                    } else//monta para o caso da tabela Pessoa
                     {
                         panelDir.add(texts[0]);
                         panelDir.add(box);
@@ -258,7 +255,7 @@ public final class assinatura extends JFrame
                         labels[1].setText("Profissão");
                         labels[2].setText("Idade");
                     }
-
+                    //adiciona as labels nas posicoes corretas
                     for (int i = 0; i < opcoes; i++)
                     {
                         panelEsq.add(labels[i]);
@@ -266,7 +263,7 @@ public final class assinatura extends JFrame
 
                     alterar.pack();
 
-                    btAlterar.addActionListener(new ActionListener()
+                    btAlterar.addActionListener(new ActionListener() //ao clicar em Alterar, realiza operações no banco
                     {
                         public void actionPerformed(ActionEvent ae)
                         {
@@ -304,7 +301,9 @@ public final class assinatura extends JFrame
             {
                 int row = tabelaAssinatura.getSelectedRow();
                 String pk;
-                if (jcSelecao.getSelectedIndex() == 0 || jcSelecao.getSelectedIndex() == 3)
+                if (jcSelecao.getSelectedIndex() == 0 || jcSelecao.getSelectedIndex() == 3) 
+                //verifica de qual tabela está removendo. Caso profissão ou pessoa, a pk se encontra na coluna 0
+                //caso ator ou diretor a pk se encontra na coluna 1
                 {
                     pk = tabelaAssinatura.getValueAt(row, 0).toString();
                 } else
@@ -318,7 +317,6 @@ public final class assinatura extends JFrame
         });
         jcSelecao.addActionListener(new ActionListener()
         {
-
             public void actionPerformed(ActionEvent ae)
             {
                 tabelaAssinatura.removeAll();
@@ -327,14 +325,12 @@ public final class assinatura extends JFrame
                 panelTopo.revalidate();
                 tabelaAssinatura = exibeTable(panelTopo, con, jcSelecao.getSelectedItem().toString());
             }
-
         });
 
     }
 
     public void alterar(String op1, String op2, String op3, String tablename, String pk, Connection con)
     {
-        int ops = 1;
         op1 = op1.replace("[", "");
         op1 = op1.replace("]", "");
         pk = pk.replace("[", "");
@@ -344,7 +340,6 @@ public final class assinatura extends JFrame
                 + "' WHERE PROFISSAO = '" + pk.toUpperCase() + "'";
         if (op2 != null)
         {
-            ops = 2;
             op2 = op2.replace("]", "");
             op2 = op2.replace("[", "");
             input = "UPDATE " + tablename.toUpperCase() + " SET IDADE = " + op1.toUpperCase() + ", NOME = '" + op2.toUpperCase() + "'"
@@ -353,13 +348,13 @@ public final class assinatura extends JFrame
         }
         if (op3 != null)
         {
-            ops = 3;
             op3 = op3.replace("]", "");
             op3 = op3.replace("[", "");
-            input = "UPDATE " + tablename.toUpperCase() + "SET NOME = '" + op1.toUpperCase() + "', "
+            input = "UPDATE " + tablename.toUpperCase() + " SET NOME = '" + op1.toUpperCase() + "', "
                     + "PROFISSAO = '" + op2.toUpperCase() + "', IDADE = " + op3.toUpperCase()
                     + " WHERE NOME = '" + pk.toUpperCase() + "'";
         }
+        System.out.println(input);
         try
         {
             PreparedStatement instrucao = con.prepareStatement(input);

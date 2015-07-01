@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package oracleconnection;
 
 import java.sql.Connection;
@@ -10,16 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Adams
- */
 public final class telaInicial extends javax.swing.JFrame
 {
-
-    /**
-     * Creates new form telaInicial
-     */
     String host, user, pass, conexao = null;
     Connection connection;
 
@@ -31,13 +18,14 @@ public final class telaInicial extends javax.swing.JFrame
         this.pass = pass;
         this.conexao = conexao;
 
-        if (!conectar())
+        if (!conectar()) //caso não consiga conectar
         {
             JOptionPane.showMessageDialog(null, "ERRO: verifique seu usuário e senha");
         }
+        this.pack();
     }
 
-    public boolean conectar()
+    public boolean conectar() //funcao para realizar a conexao com o banco de dados
     {
         try
         {
@@ -143,14 +131,17 @@ public final class telaInicial extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void botaoHistoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoActionPerformed
+        //chamada para a interface do historico
         historico historico = new historico(host, user, pass, connection);
     }//GEN-LAST:event_botaoHistoricoActionPerformed
 
     private void botaoAssinaturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAssinaturasActionPerformed
+        //chamada para a interface de assinatura
         assinatura assin = new assinatura(host, user, pass, connection);
     }//GEN-LAST:event_botaoAssinaturasActionPerformed
 
     private void botaoRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoRelatorioActionPerformed
+        //chamada para a interface de relatorio
         relatorio rel = new relatorio(host, user, pass, connection);
     }//GEN-LAST:event_botaoRelatorioActionPerformed
 
