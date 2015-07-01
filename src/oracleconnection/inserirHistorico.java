@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package oracleconnection;
 
 import java.sql.Connection;
@@ -14,20 +10,19 @@ import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Adams
- */
-public final class inserirHistorico extends javax.swing.JFrame {
+public final class inserirHistorico extends javax.swing.JFrame
+{
 
     static Connection con;
 
-    public inserirHistorico(Connection con) {
+    public inserirHistorico(Connection con)
+    {
         inserirHistorico.con = con;
         initComponents();
     }
 
-    public void setComboboxes(Connection con) {
+    public void setComboboxes(Connection con)
+    {
         String input1 = "SELECT U.CPF FROM USUARIO U";
         String input2 = "SELECT P.CODPLANO FROM PLANO P";
         String input3 = "SELECT to_char(P.DATA,'DD/MM/YY'), P.FORMA FROM PAGAMENTO P";
@@ -36,7 +31,8 @@ public final class inserirHistorico extends javax.swing.JFrame {
         Vector data2 = new Vector();
         Vector data3 = new Vector();
 
-        try {
+        try
+        {
 
             PreparedStatement instrucao1 = con.prepareStatement(input1);
             PreparedStatement instrucao2 = con.prepareStatement(input2);
@@ -56,33 +52,41 @@ public final class inserirHistorico extends javax.swing.JFrame {
             int colunas3 = resultados3.getColumnCount(); //pega quantidade de colunas
 
             int count = 0;
-            while (result1.next() || result2.next() || result3.next()) {
+            while (result1.next() || result2.next() || result3.next())
+            {
                 count++;
             }
-            if (count == 0) {
+            if (count == 0)
+            {
                 System.out.println("Nenhum resultado encontrado");
                 return;
             }
             result1 = instrucao1.executeQuery();//reposiciona ponteiro de leitura dos resultados
             result2 = instrucao2.executeQuery();//reposiciona ponteiro de leitura dos resultados
             result3 = instrucao3.executeQuery();//reposiciona ponteiro de leitura dos resultados
-            while (result1.next()) {
+            while (result1.next())
+            {
                 Vector row = new Vector(colunas1);     //cria as tuplas com os dados para exibicao
-                for (int i = 1; i <= colunas1; i++) {
+                for (int i = 1; i <= colunas1; i++)
+                {
                     row.addElement(result1.getObject(i));
                 }
                 data1.addElement(row); //adiciona no vetor de dados as tuplas
             }
-            while (result2.next()) {
+            while (result2.next())
+            {
                 Vector row = new Vector(colunas2);     //cria as tuplas com os dados para exibicao
-                for (int i = 1; i <= colunas2; i++) {
+                for (int i = 1; i <= colunas2; i++)
+                {
                     row.addElement(result2.getObject(i));
                 }
                 data2.addElement(row); //adiciona no vetor de dados as tuplas
             }
-            while (result3.next()) {
+            while (result3.next())
+            {
                 Vector row = new Vector(colunas3);     //cria as tuplas com os dados para exibicao
-                for (int i = 1; i <= colunas3; i++) {
+                for (int i = 1; i <= colunas3; i++)
+                {
                     row.addElement(result3.getObject(i));
                 }
                 data3.addElement(row);
@@ -92,21 +96,25 @@ public final class inserirHistorico extends javax.swing.JFrame {
             result2.close();
             result3.close();
 
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + e.getMessage());
         }
         //adicionando os itens às combo boxes
-        for (int i = 0; i < data1.capacity(); i++) {
+        for (int i = 0; i < data1.capacity(); i++)
+        {
             jcUsuario.addItem(data1.elementAt(i).toString());
         }
 
-        for (int i = 0; i < data2.capacity(); i++) {
+        for (int i = 0; i < data2.capacity(); i++)
+        {
             jcPlano.addItem(data2.elementAt(i).toString());
         }
-        for (int i = 0; i < data3.capacity(); i++) {
+        for (int i = 0; i < data3.capacity(); i++)
+        {
             jcData.addItem(data3.get(i).toString());
         }
-        
+
     }
 
     /**
@@ -116,7 +124,8 @@ public final class inserirHistorico extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jlUsuario = new javax.swing.JLabel();
         jlPlano = new javax.swing.JLabel();
@@ -134,15 +143,19 @@ public final class inserirHistorico extends javax.swing.JFrame {
 
         jlData.setText("Data, Forma");
 
-        jcUsuario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jcUsuario.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jcUsuarioActionPerformed(evt);
             }
         });
 
         jbInserir.setText("Inserir");
-        jbInserir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jbInserir.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jbInserirActionPerformed(evt);
             }
         });
@@ -150,56 +163,60 @@ public final class inserirHistorico extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jlData)
-                    .addComponent(jlPlano)
-                    .addComponent(jlUsuario))
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jbInserir))
-                    .addComponent(jcData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcPlano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(131, 131, 131))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jlData)
+                                .addComponent(jlPlano)
+                                .addComponent(jlUsuario))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jbInserir))
+                                .addComponent(jcData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jcPlano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jcUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(131, 131, 131))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jcData, jcPlano, jcUsuario});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]
+        {
+            jcData, jcPlano, jcUsuario
+        });
 
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlUsuario)
-                    .addComponent(jcUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlPlano)
-                    .addComponent(jcPlano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlData)
-                    .addComponent(jcData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbInserir)
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jlUsuario)
+                                .addComponent(jcUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jlPlano)
+                                .addComponent(jcPlano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jlData)
+                                .addComponent(jcData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbInserir)
+                        .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jbInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbInserirActionPerformed
+    private void jbInserirActionPerformed(java.awt.event.ActionEvent evt)
+    {//GEN-FIRST:event_jbInserirActionPerformed
         String user = jcUsuario.getSelectedItem().toString().replaceAll("[^a-zA-Z0-9]", "");
         String plano = jcPlano.getSelectedItem().toString().replaceAll("[^a-zA-Z0-9]", "");
         Long inputUsuario = Long.parseLong(user);
         Long inputPlano = Long.parseLong(plano);
         String[] inputData = jcData.getSelectedItem().toString().toUpperCase().split(",");
-        
+
         inputData[0] = inputData[0].replace("[", "");
         inputData[0] = inputData[0].replace(" ", "");
         inputData[1] = inputData[1].replaceAll("[^a-zA-Z0-9]", "");
@@ -207,53 +224,65 @@ public final class inserirHistorico extends javax.swing.JFrame {
                 + inputUsuario + ","
                 + inputPlano + ",'"
                 + inputData[0] + "','"
-                + inputData[1] + "')"; 
+                + inputData[1] + "')";
         Statement instrucao;
-        try{
+        try
+        {
             instrucao = con.createStatement();
             instrucao.executeUpdate(query);
-            
-        }catch (SQLException e) {
+
+        } catch (SQLException e)
+        {
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + e.getMessage());
         }
 
-
     }//GEN-LAST:event_jbInserirActionPerformed
 
-    private void jcUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcUsuarioActionPerformed
+    private void jcUsuarioActionPerformed(java.awt.event.ActionEvent evt)
+    {//GEN-FIRST:event_jcUsuarioActionPerformed
 
     }//GEN-LAST:event_jcUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex)
+        {
             java.util.logging.Logger.getLogger(inserirHistorico.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
+        } catch (InstantiationException ex)
+        {
             java.util.logging.Logger.getLogger(inserirHistorico.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalAccessException ex)
+        {
             java.util.logging.Logger.getLogger(inserirHistorico.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
             java.util.logging.Logger.getLogger(inserirHistorico.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
                 new inserirHistorico(con).setVisible(true);
             }
         });

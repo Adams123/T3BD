@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package oracleconnection;
 
 import java.sql.Connection;
@@ -10,33 +5,30 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Adams
- */
-public final class telaInicial extends javax.swing.JFrame {
-
-    /**
-     * Creates new form telaInicial
-     */
+public final class telaInicial extends javax.swing.JFrame
+{
     String host, user, pass, conexao = null;
     Connection connection;
-    
-    public telaInicial(String host, String user, String pass, String conexao) {
+
+    public telaInicial(String host, String user, String pass, String conexao)
+    {
         initComponents();
         this.host = host;
         this.user = user;
         this.pass = pass;
         this.conexao = conexao;
-        
-        if(!conectar())
+
+        if (!conectar()) //caso não consiga conectar
         {
             JOptionPane.showMessageDialog(null, "ERRO: verifique seu usuário e senha");
         }
+        this.pack();
     }
-    
-    public boolean conectar() {
-        try {
+
+    public boolean conectar() //funcao para realizar a conexao com o banco de dados
+    {
+        try
+        {
             Class.forName(conexao);
             connection = DriverManager.getConnection(
                     host,
@@ -44,15 +36,19 @@ public final class telaInicial extends javax.swing.JFrame {
                     pass);
             jtAreaDeStatus.setText("Conectado com sucesso!");
             jtAreaDeStatus2.setText("usuário: " + user);
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex)
+        {
             jtAreaDeStatus.setText("Problema: verifique o driver do banco de dados");
-        } catch (SQLException ex) {
+        } catch (SQLException ex)
+        {
             jtAreaDeStatus.setText("Problema: verifique seu usuário e senha");
         }
         return true;
     }
 
-    private telaInicial() {}
+    private telaInicial()
+    {
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -135,47 +131,60 @@ public final class telaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botaoHistoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoActionPerformed
-        historico historico = new historico(host, user, pass,connection);
+        //chamada para a interface do historico
+        historico historico = new historico(host, user, pass, connection);
     }//GEN-LAST:event_botaoHistoricoActionPerformed
 
     private void botaoAssinaturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAssinaturasActionPerformed
-        assinatura assin = new assinatura(host, user, pass,connection);
+        //chamada para a interface de assinatura
+        assinatura assin = new assinatura(host, user, pass, connection);
     }//GEN-LAST:event_botaoAssinaturasActionPerformed
 
     private void botaoRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoRelatorioActionPerformed
-        relatorio rel = new relatorio(host, user, pass,connection);
+        //chamada para a interface de relatorio
+        relatorio rel = new relatorio(host, user, pass, connection);
     }//GEN-LAST:event_botaoRelatorioActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex)
+        {
             java.util.logging.Logger.getLogger(telaInicial.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
+        } catch (InstantiationException ex)
+        {
             java.util.logging.Logger.getLogger(telaInicial.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalAccessException ex)
+        {
             java.util.logging.Logger.getLogger(telaInicial.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
             java.util.logging.Logger.getLogger(telaInicial.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
                 new telaInicial().setVisible(true);
             }
         });

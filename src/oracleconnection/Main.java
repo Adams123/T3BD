@@ -2,24 +2,18 @@ package oracleconnection;
 
 import javax.swing.JFrame;
 
-/**
- *
- * @author Robson (material original editado: Prof. José Fernando Rodrigues Jr.)
- */
-public class Main {
+public class Main
+{
+    public static void main(String[] args)
+    {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        
-        String host = "jdbc:oracle:thin:@grad.icmc.usp.br:15215:orcl";
-        String user = "6791943";
-        String pass = "basedededos";
-        String conexao = "oracle.jdbc.driver.OracleDriver";
-        
-        JFrame tela = new telaInicial(host, user, pass,conexao);
+        String host = "jdbc:oracle:thin:@grad.icmc.usp.br:15215:orcl"; //conexao com lab grad
+        String user = "6791943"; //usuario
+        String pass = "basedededos"; //senha 
+        String conexao = "oracle.jdbc.driver.OracleDriver"; //driver de conexao
+
+        JFrame tela = new telaInicial(host, user, pass, conexao);
         tela.setVisible(true);
     }
-    
+
 }
