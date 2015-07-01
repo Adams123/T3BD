@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-public final class assinatura extends JFrame
+public final class Generalizacao extends JFrame
 {
 
     String host, user, pass = null;
@@ -32,23 +32,23 @@ public final class assinatura extends JFrame
     JFrame j;
     JPanel panelBaixo, panelTopo;
     JButton remover, alterar, inserir, sair;
-    JTable tabelaAssinatura;
-    JScrollPane paneAssinatura;
+    JTable tabelaGeneralizacao;
+    JScrollPane paneGeneralizacao;
     JTextField jtAreaDeStatus;
     JComboBox jcSelecao;
 
-    public assinatura(String host, String user, String pass, Connection con)
+    public Generalizacao(String host, String user, String pass, Connection con)
     {
         this.host = host;
         this.user = user;
         this.pass = pass;
         this.con = con;
 
-        exibeJanelaAssinatura();
+        exibeJanelaGeneralizacao();
 
     }
 
-    public void exibeJanelaAssinatura()
+    public void exibeJanelaGeneralizacao()
     {
         //janela principal
         j = new JFrame("ICMC-USP - SCC0240 - Projeto 3");
@@ -87,7 +87,7 @@ public final class assinatura extends JFrame
 
         eventosBotoes();
 
-        tabelaAssinatura = exibeTable(panelTopo, con, "PESSOA");
+        tabelaGeneralizacao = exibeTable(panelTopo, con, "PESSOA");
         j.pack();
         j.setVisible(true);
         
@@ -175,10 +175,10 @@ public final class assinatura extends JFrame
             {
                 JComboBox fks = new JComboBox();
                 setFksBoxes(fks, jcSelecao.getSelectedItem().toString().toUpperCase()); //cria a combobox de fks da tabela selecionada
-                inserirAssinatura assin = new inserirAssinatura(con,
+                InserirGeneralizacao gen = new InserirGeneralizacao(con,
                         jcSelecao.getSelectedItem().toString().toUpperCase(), fks);
-                //cria a interface de insercao de tuplas na assinatura
-                assin.layoutInsercao();
+                //cria a interface de insercao de tuplas na generalizacao
+                gen.layoutInsercao();
             }
 
         });
@@ -187,7 +187,7 @@ public final class assinatura extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
-                if (tabelaAssinatura.getSelectedRow() != -1) //verifica se selecionou uma tupla
+                if (tabelaGeneralizacao.getSelectedRow() != -1) //verifica se selecionou uma tupla
                 {
                     final JTextField texts[]; //campos para digitar valores novos
                     int opcoes = 2; //quantidade de opcoes disponíveis, 2 no caso de Ator ou Diretor
@@ -271,17 +271,17 @@ public final class assinatura extends JFrame
                             {
                                 alterar(texts[0].getText(), null, null,
                                         jcSelecao.getSelectedItem().toString().toUpperCase(),
-                                        tabelaAssinatura.getValueAt(tabelaAssinatura.getSelectedRow(), 0).toString(), con); //envia a PK de profissao, que é uma só
+                                        tabelaGeneralizacao.getValueAt(tabelaGeneralizacao.getSelectedRow(), 0).toString(), con); //envia a PK de profissao, que é uma só
                             } else if (jcSelecao.getSelectedItem().toString().toUpperCase().compareTo("PESSOA") == 0)
                             {
                                 alterar(texts[0].getText(), box.getSelectedItem().toString(), texts[1].getText(),
                                         jcSelecao.getSelectedItem().toString().toUpperCase(),
-                                        tabelaAssinatura.getValueAt(tabelaAssinatura.getSelectedRow(), 0).toString(), con);
+                                        tabelaGeneralizacao.getValueAt(tabelaGeneralizacao.getSelectedRow(), 0).toString(), con);
                             } else
                             {
                                 alterar(texts[0].getText(), box.getSelectedItem().toString(), null,
                                         jcSelecao.getSelectedItem().toString().toUpperCase(),
-                                        tabelaAssinatura.getValueAt(tabelaAssinatura.getSelectedRow(), 1).toString(), con);
+                                        tabelaGeneralizacao.getValueAt(tabelaGeneralizacao.getSelectedRow(), 1).toString(), con);
                             }
                         }
                     });
@@ -299,16 +299,16 @@ public final class assinatura extends JFrame
 
             public void actionPerformed(ActionEvent ae)
             {
-                int row = tabelaAssinatura.getSelectedRow();
+                int row = tabelaGeneralizacao.getSelectedRow();
                 String pk;
                 if (jcSelecao.getSelectedIndex() == 0 || jcSelecao.getSelectedIndex() == 3) 
                 //verifica de qual tabela está removendo. Caso profissão ou pessoa, a pk se encontra na coluna 0
                 //caso ator ou diretor a pk se encontra na coluna 1
                 {
-                    pk = tabelaAssinatura.getValueAt(row, 0).toString();
+                    pk = tabelaGeneralizacao.getValueAt(row, 0).toString();
                 } else
                 {
-                    pk = tabelaAssinatura.getValueAt(row, 1).toString();
+                    pk = tabelaGeneralizacao.getValueAt(row, 1).toString();
                 }
 
                 deletar(pk.toUpperCase(), con, jcSelecao.getSelectedItem().toString());
@@ -319,11 +319,11 @@ public final class assinatura extends JFrame
         {
             public void actionPerformed(ActionEvent ae)
             {
-                tabelaAssinatura.removeAll();
+                tabelaGeneralizacao.removeAll();
                 panelTopo.removeAll();
                 panelTopo.repaint();
                 panelTopo.revalidate();
-                tabelaAssinatura = exibeTable(panelTopo, con, jcSelecao.getSelectedItem().toString());
+                tabelaGeneralizacao = exibeTable(panelTopo, con, jcSelecao.getSelectedItem().toString());
             }
         });
 

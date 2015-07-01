@@ -57,7 +57,8 @@ public final class telaInicial extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         botaoHistorico = new javax.swing.JButton();
         botaoAssinaturas = new javax.swing.JButton();
@@ -68,22 +69,28 @@ public final class telaInicial extends javax.swing.JFrame
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         botaoHistorico.setText("Editar Histórico");
-        botaoHistorico.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        botaoHistorico.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 botaoHistoricoActionPerformed(evt);
             }
         });
 
-        botaoAssinaturas.setText("Editar Assinaturas");
-        botaoAssinaturas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        botaoAssinaturas.setText("Editar Generalização");
+        botaoAssinaturas.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 botaoAssinaturasActionPerformed(evt);
             }
         });
 
         botaoRelatorio.setText("Imprimir Relatório");
-        botaoRelatorio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        botaoRelatorio.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 botaoRelatorioActionPerformed(evt);
             }
         });
@@ -137,7 +144,7 @@ public final class telaInicial extends javax.swing.JFrame
 
     private void botaoAssinaturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAssinaturasActionPerformed
         //chamada para a interface de assinatura
-        assinatura assin = new assinatura(host, user, pass, connection);
+        Generalizacao gen = new Generalizacao(host, user, pass, connection);
     }//GEN-LAST:event_botaoAssinaturasActionPerformed
 
     private void botaoRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoRelatorioActionPerformed
