@@ -103,14 +103,20 @@ final class relatorio extends JFrame
                     Document doc = new Document();
                     PdfWriter.getInstance(doc, new FileOutputStream(path + ".pdf"));
                     doc.open();
-                    
+
                     PdfPTable pdfTable = new PdfPTable(tabelaRelatorio.getColumnCount());
-                    
-                    for(int i=0;i<tabelaRelatorio.getColumnCount();i++)
+
+                    for (int i = 0; i < tabelaRelatorio.getColumnCount(); i++)
+                    {
                         pdfTable.addCell(tabelaRelatorio.getColumnName(i));
-                    for(int row = 0;row<tabelaRelatorio.getRowCount();row++)
-                        for(int col = 0;col<tabelaRelatorio.getColumnCount();col++)
+                    }
+                    for (int row = 0; row < tabelaRelatorio.getRowCount(); row++)
+                    {
+                        for (int col = 0; col < tabelaRelatorio.getColumnCount(); col++)
+                        {
                             pdfTable.addCell(tabelaRelatorio.getModel().getValueAt(row, col).toString());
+                        }
+                    }
                     pdfWriter.addTitlePage(doc, pdfTable);
                     doc.close();
                 } catch (FileNotFoundException ex)
@@ -146,13 +152,13 @@ final class relatorio extends JFrame
 
         Vector columnNames = new Vector();
         Vector data = new Vector();
-        
+
         try
         {
 
             PreparedStatement instrucao = conexao.prepareStatement(input);
             //construção da classe PreparedStatement para passagem de parâmetros
-            
+
             ResultSet result = instrucao.executeQuery(); //recebe os resultados da query
             ResultSetMetaData resultados = result.getMetaData(); //cria metadados dos resultados
             int colunas = resultados.getColumnCount(); //pega quantidade de colunas
@@ -169,7 +175,7 @@ final class relatorio extends JFrame
             {
                 columnNames.addElement(resultados.getColumnName(i)); //adiciona os nomes das colunas ao vetor de nomes
             }
-            
+
             result = instrucao.executeQuery();//reposiciona ponteiro de leitura dos resultados
             while (result.next())
             {
@@ -180,13 +186,13 @@ final class relatorio extends JFrame
                 }
                 data.addElement(row); //adiciona no vetor de dados as tuplas
             }
-            
+
             result.close();       //encerra a consulta
         } catch (SQLException e)
         {
             JOptionPane.showMessageDialog(null, "Erro SQL: " + e.getMessage());
         }
-        
+
         //cria tabela e painel novo para exibir as consultas, retornando a mesma
         DefaultTableModel d = new DefaultTableModel(data, columnNames);
         JTable tATable = new JTable(d);

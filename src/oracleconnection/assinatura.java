@@ -182,8 +182,9 @@ public final class assinatura extends JFrame
                 JComboBox fks = new JComboBox();
                 setFksBoxes(fks, jcSelecao.getSelectedItem().toString().toUpperCase());
                 inserirAssinatura assin = new inserirAssinatura(con,
-                        jcSelecao.getSelectedItem().toString().toUpperCase(),fks);
-                
+                        jcSelecao.getSelectedItem().toString().toUpperCase(), fks);
+                assin.layoutInsercao();
+
             }
 
         });
@@ -339,31 +340,31 @@ public final class assinatura extends JFrame
         pk = pk.replace("[", "");
         pk = pk.replace("]", "");
         String input;
-        input = "UPDATE "+ tablename + " SET PROFISSAO='" + op1 
+        input = "UPDATE " + tablename + " SET PROFISSAO='" + op1.toUpperCase()
                 + "' WHERE PROFISSAO = '" + pk.toUpperCase() + "'";
         if (op2 != null)
         {
             ops = 2;
             op2 = op2.replace("]", "");
             op2 = op2.replace("[", "");
-                input = "UPDATE " + tablename + " SET IDADE = " + op1 + ", NOME = '" + op2 + "'"
+            input = "UPDATE " + tablename.toUpperCase() + " SET IDADE = " + op1.toUpperCase() + ", NOME = '" + op2.toUpperCase() + "'"
                     + " WHERE NOME = '" + pk.toUpperCase() + "'";
-        
+
         }
         if (op3 != null)
         {
             ops = 3;
             op3 = op3.replace("]", "");
             op3 = op3.replace("[", "");
-            input = "UPDATE " + tablename + "SET NOME = '" + op1 + "', "
-                    + "PROFISSAO = '" + op2 + "', IDADE = " + op3
+            input = "UPDATE " + tablename.toUpperCase() + "SET NOME = '" + op1.toUpperCase() + "', "
+                    + "PROFISSAO = '" + op2.toUpperCase() + "', IDADE = " + op3.toUpperCase()
                     + " WHERE NOME = '" + pk.toUpperCase() + "'";
         }
         try
         {
             PreparedStatement instrucao = con.prepareStatement(input);
             instrucao.executeUpdate();
-        }catch(SQLException e)
+        } catch (SQLException e)
         {
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + e.getMessage());
         }
@@ -427,8 +428,15 @@ public final class assinatura extends JFrame
 
     public void deletar(String pk, Connection conexao, String tablename)
     {
-        String input = "DELETE FROM " + tablename.toUpperCase() + " WHERE NOME = '" + pk + "'";
-
+        String input;
+        if (tablename.toUpperCase().compareTo("PROFISSAO") == 0)
+        {
+            input = "DELETE FROM " + tablename.toUpperCase() + " WHERE PROFISSAO = '" + pk.toUpperCase() + "'";
+        } else
+        {
+            input = "DELETE FROM " + tablename.toUpperCase() + " WHERE NOME = '" + pk.toUpperCase() + "'";
+        }
+        System.out.println(input);
         try
         {
             PreparedStatement instrucao = conexao.prepareStatement(input);

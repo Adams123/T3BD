@@ -55,7 +55,7 @@ public final class historico extends JFrame
 
         exibeJanelaHistorico();
     }
-    
+
     public void exibeJanelaHistorico()
     {
         //janela principal
@@ -123,7 +123,7 @@ public final class historico extends JFrame
                 hist.setComboboxes(con);
                 hist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 hist.setVisible(true);
-                
+
             }
         });
         remover.addActionListener(new ActionListener()
@@ -159,10 +159,10 @@ public final class historico extends JFrame
                     alterar.add(panelEsq, BorderLayout.WEST);
                     alterar.add(panelDir, BorderLayout.EAST);
                     alterar.add(panelBot, BorderLayout.SOUTH);
-                    
+
                     JButton btAlterar = new JButton("Alterar");
                     panelBot.add(btAlterar);
-                    
+
                     final JComboBox boxes[] = new JComboBox[3];
                     JLabel labels[] = new JLabel[3];
                     for (int i = 0; i < 3; i++)
@@ -181,7 +181,7 @@ public final class historico extends JFrame
                         panelDir.add(boxes[i]);
                         panelEsq.add(labels[i]);
                     }
-                    
+
                     btAlterar.addActionListener(new ActionListener()
                     {
                         public void actionPerformed(ActionEvent ae)
@@ -190,8 +190,8 @@ public final class historico extends JFrame
                                     tabelaHistorico.getValueAt(tabelaHistorico.getSelectedRow(), 2).toString(),
                                     boxes[0].getSelectedItem().toString(),
                                     boxes[1].getSelectedItem().toString(),
-                            boxes[2].getSelectedItem().toString(),
-                            con);
+                                    boxes[2].getSelectedItem().toString(),
+                                    con);
                         }
                     });
                     alterar.pack();
@@ -204,8 +204,10 @@ public final class historico extends JFrame
 
         });
     }
-    public String arrumaData(String pk2){
-        
+
+    public String arrumaData(String pk2)
+    {
+
         String data[] = new String[3];
         for (int i = 0; i < 3; i++)
         {
@@ -216,35 +218,36 @@ public final class historico extends JFrame
         pk2 = pk2.concat(data[2] + "/" + data[1] + "/" + data[0]);
         return pk2;
     }
-    public void alterar(String pk1, String pk2, String usuario, 
+
+    public void alterar(String pk1, String pk2, String usuario,
             String plano, String dataForma, Connection conexao)
     {
-        usuario=usuario.replace("[", "");
-        usuario=usuario.replace("]", "");
-        plano=plano.replace("[", "");
-        plano=plano.replace("]", "");
-        dataForma=dataForma.replace("[", "");
-        dataForma=dataForma.replace("]", "");
-        dataForma=dataForma.replace(",", "");
+        usuario = usuario.replace("[", "");
+        usuario = usuario.replace("]", "");
+        plano = plano.replace("[", "");
+        plano = plano.replace("]", "");
+        dataForma = dataForma.replace("[", "");
+        dataForma = dataForma.replace("]", "");
+        dataForma = dataForma.replace(",", "");
         String split[] = dataForma.split(" ");
         String data = split[0];
         String forma = split[1];
-        pk2=arrumaData(pk2);
-        
+        pk2 = arrumaData(pk2);
+
         String input = "UPDATE HISTORICODEPAGAMENTO SET USUARIO=" + usuario + " ,"
                 + " PLANO = " + plano + ", DATA = '" + data + "',"
                 + " FORMA = '" + forma.toUpperCase() + "'"
                 + " WHERE USUARIO = " + pk1 + " AND DATA = '" + pk2 + "'";
-        
+
         try
         {
             PreparedStatement instrucao = conexao.prepareStatement(input);
             instrucao.executeUpdate();
-        }catch(SQLException e)
+        } catch (SQLException e)
         {
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + e.getMessage());
         }
-        
+
     }
 
     public void setFksBoxes(JComboBox boxes[])
@@ -341,7 +344,7 @@ public final class historico extends JFrame
             boxes[2].addItem(data3.get(i).toString());
         }
     }
-    
+
     public void deletar(String pk1, String pk2, Connection conexao)
     {
         pk2 = arrumaData(pk2);
